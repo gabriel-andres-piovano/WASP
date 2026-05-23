@@ -13,23 +13,20 @@ BeginPackage["WaveAmpSpinHJ`",
 ];
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Functions for eccentric equatorial orbits*)
 
 
-WaveAmpSpinHJEccEq0PA::usage = "WaveAmpSpinHJEccEqFF[l,m,n,orbit,tol] calculates the waveform amplitudes and fluxes for a non-spinnning test-particle on eccentric, equatorial orbits. The calculations are performed in the fixed frequency spin-gauge.";
+WaveAmpSpinHJEccEq0PA::usage = "WaveAmpSpinHJEccEq0PA[l,m,n,orbit,tol] calculates the waveform amplitudes and fluxes for a non-spinnning test-particle on eccentric, equatorial orbits.";
 
 
-WaveAmpSpinHJEccEqFF::usage = "WaveAmpSpinHJEccEqFF[l,m,n,orbit] calculates the waveform amplitudes and fluxes for a spinning test-particle on eccentric, equatorial orbits. The calculations are performed in the fixed frequency spin-gauge.";
-
-
-WaveAmpSpinHJEccEqFFold::usage = "WaveAmpSpinHJEccEqGenericGauge[l,m,n,orbit,wr0,tol] calculates the waveform amplitudes and fluxes for a spinning test-particle on eccentric, equatorial orbits. Valid for any spin-gauge.";
+WaveAmpSpinHJEccEqFF::usage = "WaveAmpSpinHJEccEqFF[l,m,n,orbit,tol] calculates the waveform amplitudes and fluxes for a spinning test-particle on eccentric, equatorial orbits. The calculations are performed in the fixed frequency spin-gauge.";
 
 
 WaveAmpSpinHJEccEqGenericGauge::usage = "WaveAmpSpinHJEccEqGenericGauge[l,m,n,orbit,wr0,tol] calculates the waveform amplitudes and fluxes for a spinning test-particle on eccentric, equatorial orbits. Valid for any spin-gauge.";
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Functions for circular orbits*)
 
 
@@ -40,6 +37,10 @@ WaveAmpSpinHJCEOFE::usage = "WaveAmpSpinHJCEOFE[l,m,a,rp] calculates the wavefor
 
 
 WaveAmpSpinHJCEOFT::usage = "WaveAmpSpinHJCEOFF[l,m,a,rp] calculates the waveform amplitudes and fluxes for a spinning test-particle on circular, equatorial orbits. The calculations are performed in the fixed radius spin-gauge.";
+
+
+(* ::Subsubsection:: *)
+(*Begin package*)
 
 
 Begin["`Private`"];
@@ -253,7 +254,7 @@ angeigenfunction1corrint[s_,l_,m_,\[Gamma]0_,\[Gamma]1_]:=Module[{qratio,swshcoe
 
 
 SourceTermEccEq0PA[wr_,l_,m_,n_,orbit_,{\[Lambda]_,SWSH_},{RInsol0_,dRInsol0_},{RUpsol0_,dRUpsol0_}]:=
-Module[{wr0=\[Pi],sign,a,p,e,x,\[ScriptCapitalI],En,Lz,Kc,\[CapitalOmega]r,\[CapitalOmega]\[Phi],rg,\[CapitalGamma],\[Omega],W,sumPlus0,sumMin0,rp,Ur,phase,expr,\[CapitalDelta],d\[CapitalDelta],KTeu,dKTeu,V,dV,RIn0,dRIn0,ddRIn0,RUp0,dRUp0,ddRUp0,S,L2S,L1L2S,dSd\[Theta],d2Sd\[Theta]2,\[Zeta],\[Zeta]bar,\[CapitalSigma],
+Module[{wr0=\[Pi],sign,a,p,e,x,En,Lz,Kc,\[CapitalOmega]r,\[CapitalOmega]\[Phi],rg,\[CapitalGamma],\[Omega],W,sumPlus0,sumMin0,rp,Ur,phase,expr,\[CapitalDelta],d\[CapitalDelta],KTeu,dKTeu,V,dV,RIn0,dRIn0,ddRIn0,RUp0,dRUp0,ddRUp0,S,L2S,L1L2S,dSd\[Theta],d2Sd\[Theta]2,\[Zeta],\[Zeta]bar,\[CapitalSigma],
     fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,vl,vn,vm,vmb,Cmnn,Cmnmb,Cmmbmb,CPlus0,CMin0,A2g,A1g,A0g},
     
      {a,p,e,x}=orbit["OrbitalElements"];
@@ -329,7 +330,7 @@ Module[{wr0=\[Pi],sign,a,p,e,x,\[ScriptCapitalI],En,Lz,Kc,\[CapitalOmega]r,\[Cap
 
 
 SourceTermEccEqFF[wr_,l_,m_,n_,orbit_,{\[Lambda]_,SWSH_},{RInsol0_,dRInsol0_},{RUpsol0_,dRUpsol0_}]:=
-Module[{wr0=\[Pi],sign,a,p,e,x,\[ScriptCapitalI],En,Lz,Kc,En1,Lz1,\[CapitalOmega]r,\[CapitalOmega]\[Phi],rg,\[CapitalGamma],\[CapitalGamma]1,\[Omega],W,sumPlus0,sumMin0,sumPlus1,sumMin1,
+Module[{wr0=\[Pi],sign,a,p,e,x,En,Lz,Kc,En1,Lz1,\[CapitalOmega]r,\[CapitalOmega]\[Phi],rg,\[CapitalGamma],\[CapitalGamma]1,\[Omega],W,sumPlus0,sumMin0,sumPlus1,sumMin1,
     rp,Ur,phase,expr,expr1,\[CapitalDelta],d\[CapitalDelta],KTeu,dKTeu,V,dV,RIn0,dRIn0,ddRIn0,dddRIn0,RUp0,dRUp0,ddRUp0,dddRUp0,S,L2S,L1L2S,dSd\[Theta],d2Sd\[Theta]2,\[Zeta],\[Zeta]bar,\[CapitalSigma],
     fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,dfnn0dr,dfnmb0dr,dfnmb1dr,dfmbmb0dr,dfmbmb1dr,dfmbmb2dr,
     vl,vn,vm,vmb,Sln,Snm,Snmb,Slmb,Smmb,rho,beta,pi,tau,mu,gamma,alpha,Scd\[Gamma]ndc,Scd\[Gamma]mbdc,Cmnn,Cmnmb,Cmmbmb,Cdnn,Cdnmb,Cdmbmb,St\[Phi]n,St\[Phi]mb,Srn,Srmb,rp1,Urp1,\[CapitalSigma]1,vn1,vmb1,Ann0S,Annt\[Phi]S,AnnrS,Anmb0S,Anmbt\[Phi]S,
@@ -682,19 +683,19 @@ Module[{a,p,e,x,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[CapitalGamma],\[Omega],
     "gg"->{nInt[i],relerr[i]},
     "Amplitudes"->
     <|
-      "\[ScriptCapitalI]"->CPlus0,
-      "\[ScriptCapitalH]"->CMin0
+      "I"->CPlus0,
+      "H"->CMin0
     |>,
     "Fluxes"->
     <|
-      "Energy"-><|
-        "\[ScriptCapitalI]"->Abs[CPlus0]^2/(4Pi*\[Omega]^2),
-        "\[ScriptCapitalH]"->\[Alpha]*Abs[CMin0]^2/(4Pi*\[Omega]^2)
+      "En0PA"-><|
+        "I"->Abs[CPlus0]^2/(4Pi*\[Omega]^2),
+        "H"->\[Alpha]*Abs[CMin0]^2/(4Pi*\[Omega]^2)
       |>,
-      "AngularMomentum"->
+      "Jz0PA"->
       <|
-        "\[ScriptCapitalI]"->Abs[CPlus0]^2*m/(4Pi*\[Omega]^3),
-        "\[ScriptCapitalH]"->\[Alpha]*Abs[CMin0]^2*m/(4Pi*\[Omega]^3)
+        "I"->Abs[CPlus0]^2*m/(4Pi*\[Omega]^3),
+        "H"->\[Alpha]*Abs[CMin0]^2*m/(4Pi*\[Omega]^3)
       |>
     |>
   ]
@@ -754,36 +755,36 @@ Module[{a,p,e,x,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[CapitalGamma],\[Omega],
     "gg"->{nInt[i],relerr[i]},
     "Amplitudes"->
     <|
-      "\[ScriptCapitalI]"->CPlus0,
-      "\[ScriptCapitalH]"->CMin0
+      "I"->CPlus0,
+      "H"->CMin0
     |>,
     "AmplitudesCorrection"->
     <|
-      "\[ScriptCapitalI]"->CPlus1,
-      "\[ScriptCapitalH]"->CMin1
+      "I"->CPlus1,
+      "H"->CMin1
     |>,
     "Fluxes"->
     <|
-      "Energy"-><|
-        "\[ScriptCapitalI]"->Abs[CPlus0]^2/(4Pi*\[Omega]^2),
-        "\[ScriptCapitalH]"->\[Alpha]*Abs[CMin0]^2/(4Pi*\[Omega]^2)
+      "En0PA"-><|
+        "I"->Abs[CPlus0]^2/(4Pi*\[Omega]^2),
+        "H"->\[Alpha]*Abs[CMin0]^2/(4Pi*\[Omega]^2)
       |>,
-      "AngularMomentum"->
+      "Jz0PA"->
       <|
-        "\[ScriptCapitalI]"->Abs[CPlus0]^2*m/(4Pi*\[Omega]^3),
-        "\[ScriptCapitalH]"->\[Alpha]*Abs[CMin0]^2*m/(4Pi*\[Omega]^3)
+        "I"->Abs[CPlus0]^2*m/(4Pi*\[Omega]^3),
+        "H"->\[Alpha]*Abs[CMin0]^2*m/(4Pi*\[Omega]^3)
       |>
     |>,
     "FluxesCorrection"->
     <|
-      "Energy"-><|
-        "\[ScriptCapitalI]"->(2*Re[CPlus1*Conjugate[CPlus0]])/(4Pi*\[Omega]^2),
-        "\[ScriptCapitalH]"->\[Alpha]*(2*Re[CMin1*Conjugate[CMin0]])/(4Pi*\[Omega]^2)
+      "En1PA"-><|
+        "I"->(2*Re[CPlus1*Conjugate[CPlus0]])/(4Pi*\[Omega]^2),
+        "H"->\[Alpha]*(2*Re[CMin1*Conjugate[CMin0]])/(4Pi*\[Omega]^2)
       |>,
-      "AngularMomentum"->
+      "Jz1PA"->
       <|
-        "\[ScriptCapitalI]"->(2*Re[CPlus1*Conjugate[CPlus0]])*m/(4Pi*\[Omega]^3),
-        "\[ScriptCapitalH]"->\[Alpha]*(2*Re[CMin1*Conjugate[CMin0]])*m/(4Pi*\[Omega]^3)
+        "I"->(2*Re[CPlus1*Conjugate[CPlus0]])*m/(4Pi*\[Omega]^3),
+        "H"->\[Alpha]*(2*Re[CMin1*Conjugate[CMin0]])*m/(4Pi*\[Omega]^3)
       |>
     |>
   ]
@@ -844,49 +845,40 @@ Module[{a,p,e,x,\[CapitalOmega]r0,\[CapitalOmega]\[Phi]0,\[CapitalOmega]r1,\[Cap
 	
 	Remove[RInsol0,dRInsol0,RUpsol0,dRUpsol0,RInsol1,dRInsol1,RUpsol1,dRUpsol1,\[Lambda],\[Lambda]1,SWSH,SWSHS,sampledFunc,wrlist,sumFun];
 	
-	(* Quite disappoiting...it is not faster than my method. I tried to combine this rescaling with my method, but it is neither faster nor more accurate.
-	pl=4;
-	ph=5.0;
-	
-	CPlus0=1/(2\[Pi])Quiet[NIntegrate[SourceTermEccEqGenericGauge[\[Pi]\[Xi]^pl/(\[Xi]^pl+(1-\[Xi])^ph),l,m,n,orbit,wr0,{\[Lambda],\[Lambda]1,SWSH,SWSHS},{{RInsol0,dRInsol0},{RInsol1,dRInsol1}},{{RUpsol0,dRUpsol0},{RUpsol1,dRUpsol1}}][[1]]\[Pi](pl*\[Xi]^(pl-1)(1-\[Xi])^ph+ph*\[Xi]^pl(1-\[Xi])^(ph-1))/(\[Xi]^pl+(1-\[Xi])^ph)^2,{\[Xi], 0, 1}, Method -> {"Trapezoidal", "SymbolicProcessing"->0}], NIntegrate::precw];
-	CMin0=1/(2\[Pi])Quiet[NIntegrate[SourceTermEccEqGenericGauge[\[Pi]\[Xi]^pl/(\[Xi]^pl+(1-\[Xi])^ph),l,m,n,orbit,wr0,{\[Lambda],\[Lambda]1,SWSH,SWSHS},{{RInsol0,dRInsol0},{RInsol1,dRInsol1}},{{RUpsol0,dRUpsol0},{RUpsol1,dRUpsol1}}][[2]]\[Pi](pl*\[Xi]^(pl-1)(1-\[Xi])^ph+ph*\[Xi]^pl(1-\[Xi])^(ph-1))/(\[Xi]^pl+(1-\[Xi])^ph)^2, {\[Xi], 0, 1}, Method -> {"Trapezoidal", "SymbolicProcessing"->0}], NIntegrate::precw];
-	CPlus1=1/(2\[Pi])Quiet[NIntegrate[SourceTermEccEqGenericGauge[\[Pi]\[Xi]^pl/(\[Xi]^pl+(1-\[Xi])^ph),l,m,n,orbit,wr0,{\[Lambda],\[Lambda]1,SWSH,SWSHS},{{RInsol0,dRInsol0},{RInsol1,dRInsol1}},{{RUpsol0,dRUpsol0},{RUpsol1,dRUpsol1}}][[3]]\[Pi](pl*\[Xi]^(pl-1)(1-\[Xi])^ph+ph*\[Xi]^pl(1-\[Xi])^(ph-1))/(\[Xi]^pl+(1-\[Xi])^ph)^2, {\[Xi], 0, 1}, Method -> {"Trapezoidal", "SymbolicProcessing"->0}], NIntegrate::precw];
-	CMin1=1/(2\[Pi])Quiet[NIntegrate[SourceTermEccEqGenericGauge[\[Pi]\[Xi]^pl/(\[Xi]^pl+(1-\[Xi])^ph),l,m,n,orbit,wr0,{\[Lambda],\[Lambda]1,SWSH,SWSHS},{{RInsol0,dRInsol0},{RInsol1,dRInsol1}},{{RUpsol0,dRUpsol0},{RUpsol1,dRUpsol1}}][[4]]\[Pi](pl*\[Xi]^(pl-1)(1-\[Xi])^ph+ph*\[Xi]^pl(1-\[Xi])^(ph-1))/(\[Xi]^pl+(1-\[Xi])^ph)^2, {\[Xi], 0, 1}, Method -> {"Trapezoidal", "SymbolicProcessing"->0}], NIntegrate::precw];*)
-		
   Association[
     "gg"->{nInt[i],relerr[i]},
     "Amplitudes"->
     <|
-      "\[ScriptCapitalI]"->CPlus0,
-      "\[ScriptCapitalH]"->CMin0
+      "I"->CPlus0,
+      "H"->CMin0
     |>,
     "AmplitudesCorrection"->
     <|
-      "\[ScriptCapitalI]"->CPlus1,
-      "\[ScriptCapitalH]"->CMin1
+      "I"->CPlus1,
+      "H"->CMin1
     |>,
     "Fluxes"->
     <|
-      "Energy"-><|
-        "\[ScriptCapitalI]"->Abs[CPlus0]^2/(4Pi*\[Omega]^2),
-        "\[ScriptCapitalH]"->\[Alpha]*Abs[CMin0]^2/(4Pi*\[Omega]^2)
+      "En0PA"-><|
+        "I"->Abs[CPlus0]^2/(4Pi*\[Omega]^2),
+        "H"->\[Alpha]*Abs[CMin0]^2/(4Pi*\[Omega]^2)
       |>,
-      "AngularMomentum"->
+      "Jz0PA"->
       <|
-        "\[ScriptCapitalI]"->Abs[CPlus0]^2*m/(4Pi*\[Omega]^3),
-        "\[ScriptCapitalH]"->\[Alpha]*Abs[CMin0]^2*m/(4Pi*\[Omega]^3)
+        "I"->Abs[CPlus0]^2*m/(4Pi*\[Omega]^3),
+        "H"->\[Alpha]*Abs[CMin0]^2*m/(4Pi*\[Omega]^3)
       |>
     |>,
     "FluxesCorrection"->
     <|
-      "Energy"-><|
-        "\[ScriptCapitalI]"->(2*Re[CPlus1*Conjugate[CPlus0]] - 2*Abs[CPlus0]^2*\[Omega]1/\[Omega])/(4Pi*\[Omega]^2),
-        "\[ScriptCapitalH]"->\[Alpha]*(\[Alpha]1/\[Alpha]*Abs[CMin0]^2 + 2*Re[CMin1*Conjugate[CMin0]] - 2*Abs[CMin0]^2*\[Omega]1/\[Omega])/(4Pi*\[Omega]^2)
+      "En1PA"-><|
+        "I"->(2*Re[CPlus1*Conjugate[CPlus0]] - 2*Abs[CPlus0]^2*\[Omega]1/\[Omega])/(4Pi*\[Omega]^2),
+        "H"->\[Alpha]*(\[Alpha]1/\[Alpha]*Abs[CMin0]^2 + 2*Re[CMin1*Conjugate[CMin0]] - 2*Abs[CMin0]^2*\[Omega]1/\[Omega])/(4Pi*\[Omega]^2)
       |>,
-      "AngularMomentum"->
+      "Jz1PA"->
       <|
-        "\[ScriptCapitalI]"->(2*Re[CPlus1*Conjugate[CPlus0]] - 3*Abs[CPlus0]^2*\[Omega]1/\[Omega])*m/(4Pi*\[Omega]^3),
-        "\[ScriptCapitalH]"->\[Alpha]*(\[Alpha]1/\[Alpha]*Abs[CMin0]^2 + 2*Re[CMin1*Conjugate[CMin0]] - 3*Abs[CMin0]^2*\[Omega]1/\[Omega])*m/(4Pi*\[Omega]^3)
+        "I"->(2*Re[CPlus1*Conjugate[CPlus0]] - 3*Abs[CPlus0]^2*\[Omega]1/\[Omega])*m/(4Pi*\[Omega]^3),
+        "H"->\[Alpha]*(\[Alpha]1/\[Alpha]*Abs[CMin0]^2 + 2*Re[CMin1*Conjugate[CMin0]] - 3*Abs[CMin0]^2*\[Omega]1/\[Omega])*m/(4Pi*\[Omega]^3)
       |>
     |>
   ]
@@ -902,7 +894,7 @@ Module[{a,p,e,x,\[CapitalOmega]r0,\[CapitalOmega]\[Phi]0,\[CapitalOmega]r1,\[Cap
 
 
 WaveAmpSpinHJCEOFF[l_,m_,a_,rp_]:=
-Module[{h1,h2,\[ScriptCapitalI],En,Lz,Kc,En1,En1tot,Enrp1,Lz1,Lzrp1,Lz1tot,\[CapitalOmega]\[Phi],\[CapitalGamma],\[Omega],
+Module[{h1,h2,En,Lz,Kc,En1,En1tot,Enrp1,Lz1,Lzrp1,Lz1tot,\[CapitalOmega]\[Phi],\[CapitalGamma],\[Omega],
     SWSH,\[Lambda],\[ScriptCapitalC]2,rplus,\[Kappa],\[Epsilon],\[Alpha],W,sumPlus0,sumMin0,sumPlus1,sumMin1,\[CapitalDelta],d\[CapitalDelta],KTeu,dKTeu,dKTeu1,V,dV,RInsol0,dRInsol0,ddRInsol0,dddRInsol0,
     RUpsol0,dRUpsol0,ddRUpsol0,dddRUpsol0,S,L2S,L1L2S,dSd\[Theta],d2Sd\[Theta]2,d3Sd\[Theta]3,dL2Sd\[Theta],dL1L2Sd\[Theta],\[Zeta],\[Zeta]bar,\[CapitalSigma],
     fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,dfnn0dr,dfnmb0dr,dfnmb1dr,dfmbmb0dr,dfmbmb1dr,dfmbmb2dr,
@@ -1037,36 +1029,36 @@ Module[{h1,h2,\[ScriptCapitalI],En,Lz,Kc,En1,En1tot,Enrp1,Lz1,Lzrp1,Lz1tot,\[Cap
     Association[
     "Amplitudes"->
     <|
-      "\[ScriptCapitalI]"->-CPlus0,
-      "\[ScriptCapitalH]"->-CMin0
+      "I"->-CPlus0,
+      "H"->-CMin0
     |>,
     "AmplitudesCorrection"->
     <|
-      "\[ScriptCapitalI]"->-CPlus1,
-      "\[ScriptCapitalH]"->-CMin1
+      "I"->-CPlus1,
+      "H"->-CMin1
     |>,
     "Fluxes"->
     <|
-      "Energy"-><|
-        "\[ScriptCapitalI]"->Abs[CPlus0]^2/(4Pi*\[Omega]^2),
-        "\[ScriptCapitalH]"->\[Alpha]*Abs[CMin0]^2/(4Pi*\[Omega]^2)
+      "En0PA"-><|
+        "I"->Abs[CPlus0]^2/(4Pi*\[Omega]^2),
+        "H"->\[Alpha]*Abs[CMin0]^2/(4Pi*\[Omega]^2)
       |>,
-      "AngularMomentum"->
+      "Jz0PA"->
       <|
-        "\[ScriptCapitalI]"->Abs[CPlus0]^2*m/(4Pi*\[Omega]^3),
-        "\[ScriptCapitalH]"->\[Alpha]*Abs[CMin0]^2*m/(4Pi*\[Omega]^3)
+        "I"->Abs[CPlus0]^2*m/(4Pi*\[Omega]^3),
+        "H"->\[Alpha]*Abs[CMin0]^2*m/(4Pi*\[Omega]^3)
       |>
     |>,
     "FluxesCorrection"->
     <|
-      "Energy"-><|
-        "\[ScriptCapitalI]"->(2*Re[CPlus1*Conjugate[CPlus0]])/(4Pi*\[Omega]^2),
-        "\[ScriptCapitalH]"->\[Alpha]*(2*Re[CMin1*Conjugate[CMin0]])/(4Pi*\[Omega]^2)
+      "En1PA"-><|
+        "I"->(2*Re[CPlus1*Conjugate[CPlus0]])/(4Pi*\[Omega]^2),
+        "H"->\[Alpha]*(2*Re[CMin1*Conjugate[CMin0]])/(4Pi*\[Omega]^2)
       |>,
-      "AngularMomentum"->
+      "Jz1PA"->
       <|
-        "\[ScriptCapitalI]"->(2*Re[CPlus1*Conjugate[CPlus0]])*m/(4Pi*\[Omega]^3),
-        "\[ScriptCapitalH]"->\[Alpha]*(2*Re[CMin1*Conjugate[CMin0]])*m/(4Pi*\[Omega]^3)
+        "I"->(2*Re[CPlus1*Conjugate[CPlus0]])*m/(4Pi*\[Omega]^3),
+        "H"->\[Alpha]*(2*Re[CMin1*Conjugate[CMin0]])*m/(4Pi*\[Omega]^3)
       |>
     |>
   ]
@@ -1078,7 +1070,7 @@ Module[{h1,h2,\[ScriptCapitalI],En,Lz,Kc,En1,En1tot,Enrp1,Lz1,Lzrp1,Lz1tot,\[Cap
 
 
 WaveAmpSpinHJCEOFE[l_,m_,a_,rp_]:=
-Module[{s=-2,h1,h2,\[ScriptCapitalI],En,Lz,Kc,En1,Enrp1,En1tot,Lz1,Lzrp1,Lz1tot,\[CapitalOmega]\[Phi],\[CapitalOmega]\[Phi]1,\[CapitalOmega]\[Phi]1rp1,\[CapitalOmega]\[Phi]1tot,\[CapitalGamma],\[Omega],\[Omega]1,
+Module[{s=-2,h1,h2,En,Lz,Kc,En1,Enrp1,En1tot,Lz1,Lzrp1,Lz1tot,\[CapitalOmega]\[Phi],\[CapitalOmega]\[Phi]1,\[CapitalOmega]\[Phi]1rp1,\[CapitalOmega]\[Phi]1tot,\[CapitalGamma],\[Omega],\[Omega]1,
     SWSH,SWSHS,\[Lambda],\[Lambda]1,\[ScriptCapitalC]2,\[ScriptCapitalC]21,rplus,\[Kappa],\[Epsilon],\[Alpha],\[Alpha]1,W,W1,sumPlus0,sumMin0,sumPlus1,sumMin1,\[CapitalDelta],d\[CapitalDelta],KTeu,KTeu1,dKTeu,dKTeu1,V,V1,dV,RInsol0,dRInsol0,ddRInsol0,dddRInsol0,
     RUpsol0,dRUpsol0,ddRUpsol0,RInsol1,dRInsol1,RUpsol1,dRUpsol1,dddRUpsol0,RIn0,RUp0,dRIn0,dRUp0,ddRIn0,dddRIn0,ddRUp0,dddRUp0,RIn1,RUp1,dRIn1,dRUp1,ddRIn1,ddRUp1,
     S,S1,L2S,L2S1,L1L2S,L1L2S1,dSd\[Theta],dS1d\[Theta],d2Sd\[Theta]2,d2S1d\[Theta]2,d3Sd\[Theta]3,dL2Sd\[Theta],dL1L2Sd\[Theta],\[Zeta],\[Zeta]bar,\[CapitalSigma],
@@ -1244,36 +1236,36 @@ Module[{s=-2,h1,h2,\[ScriptCapitalI],En,Lz,Kc,En1,Enrp1,En1tot,Lz1,Lzrp1,Lz1tot,
 	"\[Delta]r"->rp1,
 	"Amplitudes"->
 	<|
-     "\[ScriptCapitalI]"->-CPlus0,
-     "\[ScriptCapitalH]"->-CMin0
+     "I"->-CPlus0,
+     "H"->-CMin0
     |>,
     "AmplitudesCorrection"->
     <|
-    "\[ScriptCapitalI]"->-CPlus1,
-    "\[ScriptCapitalH]"->-CMin1
+    "I"->-CPlus1,
+    "H"->-CMin1
     |>,
     "Fluxes"->
     <|
-     "Energy"-><|
-       "\[ScriptCapitalI]"->Abs[CPlus0]^2/(4Pi*\[Omega]^2),
-       "\[ScriptCapitalH]"->\[Alpha]*Abs[CMin0]^2/(4Pi*\[Omega]^2)
+     "En0PA"-><|
+       "I"->Abs[CPlus0]^2/(4Pi*\[Omega]^2),
+       "H"->\[Alpha]*Abs[CMin0]^2/(4Pi*\[Omega]^2)
      |>,
-     "AngularMomentum"->
+     "Jz0PA"->
      <|
-       "\[ScriptCapitalI]"->Abs[CPlus0]^2*m/(4Pi*\[Omega]^3),
-       "\[ScriptCapitalH]"->\[Alpha]*Abs[CMin0]^2*m/(4Pi*\[Omega]^3)
+       "I"->Abs[CPlus0]^2*m/(4Pi*\[Omega]^3),
+       "H"->\[Alpha]*Abs[CMin0]^2*m/(4Pi*\[Omega]^3)
      |>
     |>,
     "FluxesCorrection"->
     <|
-    "Energy"-><|
-      "\[ScriptCapitalI]"->(2*Re[CPlus1*Conjugate[CPlus0]] - 2*Abs[CPlus0]^2*\[Omega]1/\[Omega])/(4Pi*\[Omega]^2),
-      "\[ScriptCapitalH]"->\[Alpha]*(\[Alpha]1/\[Alpha]*Abs[CMin0]^2 + 2*Re[CMin1*Conjugate[CMin0]] - 2*Abs[CMin0]^2*\[Omega]1/\[Omega])/(4Pi*\[Omega]^2)
+    "En1PA"-><|
+      "I"->(2*Re[CPlus1*Conjugate[CPlus0]] - 2*Abs[CPlus0]^2*\[Omega]1/\[Omega])/(4Pi*\[Omega]^2),
+      "H"->\[Alpha]*(\[Alpha]1/\[Alpha]*Abs[CMin0]^2 + 2*Re[CMin1*Conjugate[CMin0]] - 2*Abs[CMin0]^2*\[Omega]1/\[Omega])/(4Pi*\[Omega]^2)
     |>,
-    "AngularMomentum"->
+    "Jz1PA"->
     <|
-     "\[ScriptCapitalI]"->(2*Re[CPlus1*Conjugate[CPlus0]] - 3*Abs[CPlus0]^2*\[Omega]1/\[Omega])*m/(4Pi*\[Omega]^3),
-     "\[ScriptCapitalH]"->\[Alpha]*(\[Alpha]1/\[Alpha]*Abs[CMin0]^2 + 2*Re[CMin1*Conjugate[CMin0]] - 3*Abs[CMin0]^2*\[Omega]1/\[Omega])*m/(4Pi*\[Omega]^3)
+     "I"->(2*Re[CPlus1*Conjugate[CPlus0]] - 3*Abs[CPlus0]^2*\[Omega]1/\[Omega])*m/(4Pi*\[Omega]^3),
+     "H"->\[Alpha]*(\[Alpha]1/\[Alpha]*Abs[CMin0]^2 + 2*Re[CMin1*Conjugate[CMin0]] - 3*Abs[CMin0]^2*\[Omega]1/\[Omega])*m/(4Pi*\[Omega]^3)
     |>
    |>
   ]
@@ -1285,7 +1277,7 @@ Module[{s=-2,h1,h2,\[ScriptCapitalI],En,Lz,Kc,En1,Enrp1,En1tot,Lz1,Lzrp1,Lz1tot,
 
 
 WaveAmpSpinHJCEOFT[l_,m_,a_,rp_]:=
-Module[{s=-2,\[ScriptCapitalI],En,Lz,Kc,En1,Lz1,\[CapitalOmega]\[Phi],\[CapitalOmega]\[Phi]1,\[CapitalGamma],\[CapitalGamma]1,\[Omega],\[Omega]1,\[Lambda],\[Lambda]1,SWSH,SWSHS,RInsol0,dRInsol0,RUpsol0,dRUpsol0,RInsol1,dRInsol1,RUpsol1,dRUpsol1,
+Module[{s=-2,En,Lz,Kc,En1,Lz1,\[CapitalOmega]\[Phi],\[CapitalOmega]\[Phi]1,\[CapitalGamma],\[CapitalGamma]1,\[Omega],\[Omega]1,\[Lambda],\[Lambda]1,SWSH,SWSHS,RInsol0,dRInsol0,RUpsol0,dRUpsol0,RInsol1,dRInsol1,RUpsol1,dRUpsol1,
     \[ScriptCapitalC]2,\[ScriptCapitalC]21,rplus,\[Kappa],\[Epsilon],\[Alpha],\[Alpha]1,W,W1,sumPlus0,sumMin0,sumPlus1,sumMin1,
     \[CapitalDelta],d\[CapitalDelta],KTeu,KTeu1,dKTeu,dKTeu1,V,V1,dV,RIn0,dRIn0,ddRIn0,RIn1,dRIn1,ddRIn1,dddRIn0,
     RUp0,dRUp0,ddRUp0,RUp1,dRUp1,ddRUp1,dddRUp0,S,S1,L2S,L2S1,L1L2S,L1L2S1,dSd\[Theta],dS1d\[Theta],d2Sd\[Theta]2,d2S1d\[Theta]2,\[Zeta],\[Zeta]bar,\[CapitalSigma],
@@ -1421,36 +1413,36 @@ Module[{s=-2,\[ScriptCapitalI],En,Lz,Kc,En1,Lz1,\[CapitalOmega]\[Phi],\[CapitalO
     Association[
     "Amplitudes"->
     <|
-      "\[ScriptCapitalI]"->-CPlus0,
-      "\[ScriptCapitalH]"->-CMin0
+      "I"->-CPlus0,
+      "H"->-CMin0
     |>,
     "AmplitudesCorrection"->
     <|
-      "\[ScriptCapitalI]"->-CPlus1,
-      "\[ScriptCapitalH]"->-CMin1
+      "I"->-CPlus1,
+      "H"->-CMin1
     |>,
     "Fluxes"->
     <|
-      "Energy"-><|
-        "\[ScriptCapitalI]"->Abs[CPlus0]^2/(4Pi*\[Omega]^2),
-        "\[ScriptCapitalH]"->\[Alpha]*Abs[CMin0]^2/(4Pi*\[Omega]^2)
+      "En0PA"-><|
+        "I"->Abs[CPlus0]^2/(4Pi*\[Omega]^2),
+        "H"->\[Alpha]*Abs[CMin0]^2/(4Pi*\[Omega]^2)
       |>,
-      "AngularMomentum"->
+      "Jz0PA"->
       <|
-        "\[ScriptCapitalI]"->Abs[CPlus0]^2*m/(4Pi*\[Omega]^3),
-        "\[ScriptCapitalH]"->\[Alpha]*Abs[CMin0]^2*m/(4Pi*\[Omega]^3)
+        "I"->Abs[CPlus0]^2*m/(4Pi*\[Omega]^3),
+        "H"->\[Alpha]*Abs[CMin0]^2*m/(4Pi*\[Omega]^3)
       |>
     |>,
     "FluxesCorrection"->
     <|
-      "Energy"-><|
-        "\[ScriptCapitalI]"->(2*Re[CPlus1*Conjugate[CPlus0]] - 2*Abs[CPlus0]^2*\[Omega]1/\[Omega])/(4Pi*\[Omega]^2),
-        "\[ScriptCapitalH]"->\[Alpha]*(\[Alpha]1/\[Alpha]*Abs[CMin0]^2 + 2*Re[CMin1*Conjugate[CMin0]] - 2*Abs[CMin0]^2*\[Omega]1/\[Omega])/(4Pi*\[Omega]^2)
+      "En1PA"-><|
+        "I"->(2*Re[CPlus1*Conjugate[CPlus0]] - 2*Abs[CPlus0]^2*\[Omega]1/\[Omega])/(4Pi*\[Omega]^2),
+        "H"->\[Alpha]*(\[Alpha]1/\[Alpha]*Abs[CMin0]^2 + 2*Re[CMin1*Conjugate[CMin0]] - 2*Abs[CMin0]^2*\[Omega]1/\[Omega])/(4Pi*\[Omega]^2)
       |>,
-      "AngularMomentum"->
+      "Jz1PA"->
       <|
-        "\[ScriptCapitalI]"->(2*Re[CPlus1*Conjugate[CPlus0]] - 3*Abs[CPlus0]^2*\[Omega]1/\[Omega])*m/(4Pi*\[Omega]^3),
-        "\[ScriptCapitalH]"->\[Alpha]*(\[Alpha]1/\[Alpha]*Abs[CMin0]^2 + 2*Re[CMin1*Conjugate[CMin0]] - 3*Abs[CMin0]^2*\[Omega]1/\[Omega])*m/(4Pi*\[Omega]^3)
+        "I"->(2*Re[CPlus1*Conjugate[CPlus0]] - 3*Abs[CPlus0]^2*\[Omega]1/\[Omega])*m/(4Pi*\[Omega]^3),
+        "H"->\[Alpha]*(\[Alpha]1/\[Alpha]*Abs[CMin0]^2 + 2*Re[CMin1*Conjugate[CMin0]] - 3*Abs[CMin0]^2*\[Omega]1/\[Omega])*m/(4Pi*\[Omega]^3)
       |>
     |>
   ]
