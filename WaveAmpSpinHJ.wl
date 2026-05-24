@@ -83,6 +83,100 @@ dfabid\[Theta][\[Zeta]_,\[Zeta]bar_,sin\[Theta]_,\[CapitalDelta]_,d\[CapitalDelt
 
 
 
+(* ::Subsection:: *)
+(*Computation phase in the source term*)
+
+
+(* ::Subsubsection::Closed:: *)
+(*Reference*)
+
+
+\[CapitalDelta]\[Psi]funref[{\[Omega]_,m_},{EEg_,Lzg_},a_,p_,e_,x_]:=Module[{rp,rm,r1g,r2g,r3g,krg,\[Gamma]r,ellK,ellE,ellPi,\[ScriptCapitalI],\[ScriptCapitalI]rover,\[ScriptCapitalI]r2over,\[ScriptCapitalI]p,\[ScriptCapitalI]mreg},
+	rp=1+Sqrt[1-a^2];
+	rm=1-Sqrt[1-a^2];
+	r1g=p/(1-e);
+	r2g=p/(1+e);
+	r3g=2/(1-EEg^2)-(r1g+r2g);
+
+	krg=((r1g-r2g)r3g)/((r1g-r3g)r2g);
+	\[Gamma]r=1-r1g/r2g;
+	ellK=2EllipticK[krg];
+	ellE=2EllipticE[krg];
+	ellPi=2EllipticPi[\[Gamma]r,krg];
+
+	\[ScriptCapitalI]=(2ellK)/Sqrt[r2g(r1g-r3g)];
+	\[ScriptCapitalI]rover=2/Sqrt[r2g(r1g-r3g)]r1g*ellPi;
+	\[ScriptCapitalI]r2over=-Sqrt[r2g(r1g-r3g)](-ellE+r1g*ellK/(r1g-r3g)-r1g(r1g+r2g+r3g)ellPi/(r2g(r1g-r3g)));
+	\[ScriptCapitalI]p=2/Sqrt[(r1g-r3g)r2g] 1/rp (r1g/(r1g-rp) 2EllipticPi[(rp(r1g-r2g))/((r1g-rp)r2g),krg]- ellK);
+	\[ScriptCapitalI]mreg=2/Sqrt[(r1g-r3g)r2g] (r1g/(r1g-rm) 2EllipticPi[(rm(r1g-r2g))/((r1g-rm)r2g),krg]- ellK);
+
+	1/(2\[Pi])1/Sqrt[1-EEg^2](-EEg*(\[ScriptCapitalI]r2over+2\[ScriptCapitalI]rover)\[Omega]+\[ScriptCapitalI](Lzg*m-4*EEg*\[Omega])+(rp*\[ScriptCapitalI]p(Lzg*m*rm-4EEg(-2+rm)\[Omega]-2a(EEg*m+Lzg*\[Omega])))/(rm-rp)+(\[ScriptCapitalI]mreg(-Lzg*m*rp+4EEg(-2+rp)\[Omega]+2a(EEg*m+Lzg*\[Omega])))/(rm-rp))
+]
+
+
+(* ::Subsubsection::Closed:: *)
+(*Periastron as initial condition*)
+
+
+\[CapitalDelta]\[Psi]ICr2gfun[wr_,{\[Omega]_,m_},{EEg_,Lzg_},\[Psi]ref_,a_,p_,e_,x_]:=Module[{rp,rm,r1g,r2g,r3g,krg,krghold,\[Gamma]r,\[Phi],ellF,ellE,ellPi,\[ScriptCapitalI],\[ScriptCapitalI]rover,\[ScriptCapitalI]r2over,\[ScriptCapitalI]p,\[ScriptCapitalI]m},
+	rp=1+Sqrt[1-a^2];
+	rm=1-Sqrt[1-a^2];
+	r1g=p/(1-e);
+	r2g=p/(1+e);
+	r3g=2/(1-EEg^2)-(r1g+r2g);
+
+	krg=((r1g-r2g)r3g)/((r1g-r3g)r2g);
+	\[Gamma]r=(r1g-r2g)/(r1g-r3g);
+	(*The following "trick" ensures that, for wr=\[Pi], \[Phi] is exaclty \[Pi]/2 and not an approximate result. Having \[Phi]=\[Pi]/2 with MachinePrecision cause some problems with the integrals \[ScriptCapitalI]p and \[ScriptCapitalI]m*)
+	\[Phi]=JacobiAmplitude[1/\[Pi] EllipticK[krghold] wr,krghold]/.krghold->krg;
+	ellF=EllipticF[\[Phi],krg];
+	ellE=EllipticE[\[Phi],krg];
+	ellPi=EllipticPi[\[Gamma]r,\[Phi],krg];
+
+	\[ScriptCapitalI]=(2ellF)/Sqrt[r2g(r1g-r3g)];
+	\[ScriptCapitalI]rover=2/Sqrt[r2g(r1g-r3g)]((r2g-r3g)ellPi+r3g ellF);
+	\[ScriptCapitalI]r2over=2r2g^2/Sqrt[r2g(r1g-r3g)]((r3g/r2g)^2*ellF+2 r3g/r2g(1-r3g/r2g)ellPi+(1-r3g/r2g)^2 1/(2(\[Gamma]r-1)(krg-\[Gamma]r)) (\[Gamma]r*ellE+(krg-\[Gamma]r)ellF+(2\[Gamma]r*krg+2\[Gamma]r-\[Gamma]r^2-3krg)ellPi-(\[Gamma]r^2Sin[\[Phi]]Cos[\[Phi]]Sqrt[1-krg Sin[\[Phi]]^2])/(1-\[Gamma]r*Sin[\[Phi]]^2)));
+
+	\[ScriptCapitalI]p=2/(Sqrt[r2g(r1g-r3g)](r3g-rp))(ellF-(r2g-r3g)/(r2g-rp)EllipticPi[(r3g-rp)(r1g-r2g)/((r1g-r3g)(r2g-rp)),\[Phi],krg]);
+	\[ScriptCapitalI]m=2/(Sqrt[r2g(r1g-r3g)](r3g-rm))(ellF-(r2g-r3g)/(r2g-rm)EllipticPi[(r3g-rm)(r1g-r2g)/((r1g-r3g)(r2g-rm)),\[Phi],krg]);
+
+	Remove[Evaluate[ToExpression[Pick[Names["WaveAmpSpinHJ`Private`*"],StringMatchQ[#,"WaveAmpSpinHJ`Private`krghold$"~~__]&/@Names["WaveAmpSpinHJ`Private`*"],True]]]];
+
+	1/Sqrt[1-EEg^2](EEg(\[ScriptCapitalI]r2over+2*\[ScriptCapitalI]rover)\[Omega]+\[ScriptCapitalI](4EEg*\[Omega]-Lzg*m)+1/(rm-rp)\[ScriptCapitalI]m(8EEg*rm*\[Omega]+a^2(Lzg*m-4EEg*\[Omega])-2a*rm(EEg*m+Lzg*\[Omega]))+1/(rm-rp)\[ScriptCapitalI]p(-8EEg*rp*\[Omega]+a^2(-Lzg*m+4EEg*\[Omega])+2a*rp(EEg*m+Lzg*\[Omega])))+\[Psi]ref*wr
+]
+
+
+(* ::Subsubsection::Closed:: *)
+(*Apoastron as initial condition*)
+
+
+\[CapitalDelta]\[Psi]ICr1gfun[wr_,{\[Omega]_,m_},{EEg_,Lzg_},\[Psi]ref_,a_,p_,e_,x_]:=Module[{rp,rm,r1g,r2g,r3g,krg,krghold,\[Gamma]r,\[Phi],ellF,ellE,ellPi,\[ScriptCapitalI],\[ScriptCapitalI]rover,\[ScriptCapitalI]r2over,\[ScriptCapitalI]p,\[ScriptCapitalI]mreg},
+	rp=1+Sqrt[1-a^2];
+	rm=1-Sqrt[1-a^2];
+	r1g=p/(1-e);
+	r2g=p/(1+e);
+	r3g=2/(1-EEg^2)-(r1g+r2g);
+
+	krg=((r1g-r2g)r3g)/((r1g-r3g)r2g);
+	\[Gamma]r=1-r1g/r2g;
+	(*The following "trick" ensures that, for wr=\[Pi], \[Phi] is exaclty \[Pi]/2 and not an approximate result. Having \[Phi]=\[Pi]/2 with MachinePrecision cause some problems with the integrals \[ScriptCapitalI]p and \[ScriptCapitalI]m*)
+	\[Phi]=JacobiAmplitude[1/\[Pi] EllipticK[krghold] wr,krghold]/.krghold->krg;
+	ellF=EllipticF[\[Phi],krg];
+	ellE=EllipticE[\[Phi],krg];
+	ellPi=EllipticPi[\[Gamma]r,\[Phi],krg];
+
+	\[ScriptCapitalI]=(2ellF)/Sqrt[r2g(r1g-r3g)];
+	\[ScriptCapitalI]rover=2/Sqrt[r2g(r1g-r3g)]r1g*ellPi;
+	\[ScriptCapitalI]r2over=-Sqrt[r2g(r1g-r3g)](-ellE+r1g*ellF/(r1g-r3g)-r1g(r1g+r2g+r3g)ellPi/(r2g(r1g-r3g))+((r1g-r2g)Cos[\[Phi]]*Sin[\[Phi]]Sqrt[1-krg*Sin[\[Phi]]^2])/(-r2g+(-r1g+r2g)Sin[\[Phi]]^2));
+	\[ScriptCapitalI]p=2/Sqrt[(r1g-r3g)r2g] 1/rp (r1g/(r1g-rp) EllipticPi[(rp(r1g-r2g))/((r1g-rp)r2g),\[Phi],krg]- ellF);
+	\[ScriptCapitalI]mreg=2/Sqrt[(r1g-r3g)r2g](r1g/(r1g-rm) EllipticPi[(rm(r1g-r2g))/((r1g-rm)r2g),\[Phi],krg]- ellF);
+	
+	Remove[Evaluate[ToExpression[Pick[Names["WaveAmpSpinHJ`Private`*"],StringMatchQ[#,"WaveAmpSpinHJ`Private`krghold$"~~__]&/@Names["WaveAmpSpinHJ`Private`*"],True]]]];
+
+	1/Sqrt[1-EEg^2](EEg(\[ScriptCapitalI]r2over+2*\[ScriptCapitalI]rover)\[Omega]+\[ScriptCapitalI](4EEg*\[Omega]-Lzg*m)+1/(rm-rp)\[ScriptCapitalI]mreg(8EEg*\[Omega]+rp(Lzg*m-4EEg*\[Omega])-2a(EEg*m+Lzg*\[Omega]))+1/(rm-rp)\[ScriptCapitalI]p(-8EEg*rp*\[Omega]+a^2(-Lzg*m+4EEg*\[Omega])+2a*rp(EEg*m+Lzg*\[Omega])))+\[Psi]ref*wr
+]
+
+
 (* ::Section::Closed:: *)
 (*Functions to compute linearized angular Teukolsky equations*)
 
@@ -254,7 +348,7 @@ angeigenfunction1corrint[s_,l_,m_,\[Gamma]0_,\[Gamma]1_]:=Module[{qratio,swshcoe
 
 
 SourceTermEccEq0PA[wr_,l_,m_,n_,orbit_,{\[Lambda]_,SWSH_},{RInsol0_,dRInsol0_},{RUpsol0_,dRUpsol0_}]:=
-Module[{wr0=\[Pi],sign,a,p,e,x,En,Lz,Kc,\[CapitalOmega]r,\[CapitalOmega]\[Phi],rg,\[CapitalGamma],\[Omega],W,sumPlus0,sumMin0,rp,Ur,phase,expr,\[CapitalDelta],d\[CapitalDelta],KTeu,dKTeu,V,dV,RIn0,dRIn0,ddRIn0,RUp0,dRUp0,ddRUp0,S,L2S,L1L2S,dSd\[Theta],d2Sd\[Theta]2,\[Zeta],\[Zeta]bar,\[CapitalSigma],
+Module[{wr0=\[Pi],sign,a,p,e,x,En,Lz,Kc,\[CapitalOmega]r,\[CapitalOmega]\[Phi],rg,\[CapitalGamma],\[Omega],W,sumPlus0,sumMin0,rp,Ur,\[Psi]ref,phase,expr,\[CapitalDelta],d\[CapitalDelta],KTeu,dKTeu,V,dV,RIn0,dRIn0,ddRIn0,RUp0,dRUp0,ddRUp0,S,L2S,L1L2S,dSd\[Theta],d2Sd\[Theta]2,\[Zeta],\[Zeta]bar,\[CapitalSigma],
     fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,vl,vn,vm,vmb,Cmnn,Cmnmb,Cmmbmb,CPlus0,CMin0,A2g,A1g,A0g},
     
      {a,p,e,x}=orbit["OrbitalElements"];
@@ -271,7 +365,10 @@ Module[{wr0=\[Pi],sign,a,p,e,x,En,Lz,Kc,\[CapitalOmega]r,\[CapitalOmega]\[Phi],r
        
     rp = orbit["rg"][wr+wr0];
     Ur = sign*Sqrt[((rp^2+a^2)*En-a*Lz)^2-(rp^2-2rp+a^2)*(rp^2+Kc)];
-    phase = \[Omega]*orbit["\[CapitalDelta]trg"][wr+wr0]-m*orbit["\[CapitalDelta]\[Phi]rg"][wr+wr0];
+   (* phase = \[Omega]*orbit["\[CapitalDelta]trg"][wr+wr0]-m*orbit["\[CapitalDelta]\[Phi]rg"][wr+wr0];*)
+    \[Psi]ref=\[CapitalDelta]\[Psi]funref[{\[Omega],m},{En,Lz},a,p,e,x];
+    phase=\[CapitalDelta]\[Psi]ICr2gfun[wr,{\[Omega],m},{En,Lz},\[Psi]ref,a,p,e,x];
+    
     expr = Exp[sign*I*(phase+n*wr)];(* Geodesic exponential term with \[CapitalDelta]tr and \[CapitalDelta]\[Phi]r *)
     \[CapitalDelta] = rp^2-2rp+a^2;
     KTeu = (rp^2+a^2)*\[Omega]-a*m;
@@ -331,7 +428,7 @@ Module[{wr0=\[Pi],sign,a,p,e,x,En,Lz,Kc,\[CapitalOmega]r,\[CapitalOmega]\[Phi],r
 
 SourceTermEccEqFF[wr_,l_,m_,n_,orbit_,{\[Lambda]_,SWSH_},{RInsol0_,dRInsol0_},{RUpsol0_,dRUpsol0_}]:=
 Module[{wr0=\[Pi],sign,a,p,e,x,En,Lz,Kc,En1,Lz1,\[CapitalOmega]r,\[CapitalOmega]\[Phi],rg,\[CapitalGamma],\[CapitalGamma]1,\[Omega],W,sumPlus0,sumMin0,sumPlus1,sumMin1,
-    rp,Ur,phase,expr,expr1,\[CapitalDelta],d\[CapitalDelta],KTeu,dKTeu,V,dV,RIn0,dRIn0,ddRIn0,dddRIn0,RUp0,dRUp0,ddRUp0,dddRUp0,S,L2S,L1L2S,dSd\[Theta],d2Sd\[Theta]2,\[Zeta],\[Zeta]bar,\[CapitalSigma],
+    rp,Ur,\[Psi]ref,phase,expr,expr1,\[CapitalDelta],d\[CapitalDelta],KTeu,dKTeu,V,dV,RIn0,dRIn0,ddRIn0,dddRIn0,RUp0,dRUp0,ddRUp0,dddRUp0,S,L2S,L1L2S,dSd\[Theta],d2Sd\[Theta]2,\[Zeta],\[Zeta]bar,\[CapitalSigma],
     fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,dfnn0dr,dfnmb0dr,dfnmb1dr,dfmbmb0dr,dfmbmb1dr,dfmbmb2dr,
     vl,vn,vm,vmb,Sln,Snm,Snmb,Slmb,Smmb,rho,beta,pi,tau,mu,gamma,alpha,Scd\[Gamma]ndc,Scd\[Gamma]mbdc,Cmnn,Cmnmb,Cmmbmb,Cdnn,Cdnmb,Cdmbmb,St\[Phi]n,St\[Phi]mb,Srn,Srmb,rp1,Urp1,\[CapitalSigma]1,vn1,vmb1,Ann0S,Annt\[Phi]S,AnnrS,Anmb0S,Anmbt\[Phi]S,
     AnmbrS,Ambmb0S,Ambmbt\[Phi]S,AmbmbrS,CPlus0,CMin0,CPlus1,CMin1,A2g,A1g,A0g,A2par,A1par,A0par,B3par,B2par,B1par},
@@ -354,7 +451,9 @@ Module[{wr0=\[Pi],sign,a,p,e,x,En,Lz,Kc,En1,Lz1,\[CapitalOmega]r,\[CapitalOmega]
        
     rp = orbit["rg"][wr+wr0];
     Ur = sign*Sqrt[((rp^2+a^2)*En-a*Lz)^2-(rp^2-2rp+a^2)*(rp^2+Kc)];
-    phase = \[Omega]*orbit["\[CapitalDelta]trg"][wr+wr0]-m*orbit["\[CapitalDelta]\[Phi]rg"][wr+wr0];
+    (* phase = \[Omega]*orbit["\[CapitalDelta]trg"][wr+wr0]-m*orbit["\[CapitalDelta]\[Phi]rg"][wr+wr0];*)
+    \[Psi]ref=\[CapitalDelta]\[Psi]funref[{\[Omega],m},{En,Lz},a,p,e,x];
+    phase=\[CapitalDelta]\[Psi]ICr2gfun[wr,{\[Omega],m},{En,Lz},\[Psi]ref,a,p,e,x];
     expr = Exp[sign*I*(phase+n*wr)];(* Geodesic exponential term with \[CapitalDelta]tr and \[CapitalDelta]\[Phi]r *)
     \[CapitalDelta] = rp^2-2rp+a^2;
     KTeu = (rp^2+a^2)*\[Omega]-a*m;
@@ -476,7 +575,7 @@ Module[{wr0=\[Pi],sign,a,p,e,x,En,Lz,Kc,En1,Lz1,\[CapitalOmega]r,\[CapitalOmega]
 
 SourceTermEccEqGenericGauge[wr_,l_,m_,n_,orbit_,wr0_,{\[Lambda]_,\[Lambda]1_,SWSH_,SWSHS_},{{RInsol0_,dRInsol0_},{RInsol1_,dRInsol1_}},{{RUpsol0_,dRUpsol0_},{RUpsol1_,dRUpsol1_}}]:=
 Module[{sign,a,p,e,x,En,Lz,Kc,En1,Lz1,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[CapitalOmega]r1,\[CapitalOmega]\[Phi]1,\[CapitalGamma],\[CapitalGamma]1,\[Omega],\[Omega]1,W,W1,sumPlus0,sumMin0,sumPlus1,sumMin1,
-    rp,Ur,phase,expr,expr1,\[CapitalDelta],d\[CapitalDelta],KTeu,KTeu1,dKTeu,dKTeu1,V,V1,dV,RIn0,dRIn0,ddRIn0,RIn1,dRIn1,ddRIn1,dddRIn0,
+    rp,Ur,\[Psi]ref,phase,expr,expr1,\[CapitalDelta],d\[CapitalDelta],KTeu,KTeu1,dKTeu,dKTeu1,V,V1,dV,RIn0,dRIn0,ddRIn0,RIn1,dRIn1,ddRIn1,dddRIn0,
     RUp0,dRUp0,ddRUp0,RUp1,dRUp1,ddRUp1,dddRUp0,S,S1,L2S,L2S1,L1L2S,L1L2S1,dSd\[Theta],dS1d\[Theta],d2Sd\[Theta]2,d2S1d\[Theta]2,\[Zeta],\[Zeta]bar,\[CapitalSigma],
     fnn0,fnmb0,fnmb1,fmbmb0,fmbmb1,fmbmb2,fnn01,fnmb01,fnmb11,fmbmb01,fmbmb11,fmbmb21,dfnn0dr,dfnmb0dr,dfnmb1dr,dfmbmb0dr,dfmbmb1dr,dfmbmb2dr,
     vl,vn,vm,vmb,Sln,Snm,Snmb,Slmb,Smmb,rho,beta,pi,tau,mu,gamma,alpha,Scd\[Gamma]ndc,Scd\[Gamma]mbdc,Cmnn,Cmnmb,Cmmbmb,Cdnn,Cdnmb,Cdmbmb,St\[Phi]n,St\[Phi]mb,Srn,Srmb,rp1,Urp1,\[CapitalSigma]1,vn1,vmb1,Ann0S,Annt\[Phi]S,AnnrS,Anmb0S,Anmbt\[Phi]S,
@@ -502,7 +601,9 @@ Module[{sign,a,p,e,x,En,Lz,Kc,En1,Lz1,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[C
        
     rp = orbit["rg"][wr+wr0];
     Ur = sign*Sqrt[((rp^2+a^2)*En-a*Lz)^2-(rp^2-2rp+a^2)*(rp^2+Kc)];
-    phase =\[Omega]*orbit["\[CapitalDelta]trg"][wr+wr0]-m*orbit["\[CapitalDelta]\[Phi]rg"][wr+wr0];
+    (* phase = \[Omega]*orbit["\[CapitalDelta]trg"][wr+wr0]-m*orbit["\[CapitalDelta]\[Phi]rg"][wr+wr0];*)
+    \[Psi]ref=\[CapitalDelta]\[Psi]funref[{\[Omega],m},{En,Lz},a,p,e,x];
+    phase=\[CapitalDelta]\[Psi]ICr2gfun[wr,{\[Omega],m},{En,Lz},\[Psi]ref,a,p,e,x];
     expr = Exp[sign*I*(phase+n*wr)];(* Geodesic exponential term with \[CapitalDelta]tr and \[CapitalDelta]\[Phi]r *)
     \[CapitalDelta] = rp^2-2rp+a^2;
     KTeu = (rp^2+a^2)*\[Omega]-a*m;
@@ -661,7 +762,7 @@ Module[{a,p,e,x,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[CapitalGamma],\[Omega],
 	nInt[nsamp_]:=2^nsamp*2^2;
 	wrlist[nsamp_]:=N[Table[wr,{wr,Pi/(nInt[nsamp]),Pi,2Pi/nInt[nsamp]}]];
 	
-	sampledFunc[0]=SourceTermEccEqOPA[wrlist[0],l,m,n,orbit,{\[Lambda],SWSH},{RInsol0,dRInsol0},{RUpsol0,dRUpsol0}];
+	sampledFunc[0]=SourceTermEccEq0PA[wrlist[0],l,m,n,orbit,{\[Lambda],SWSH},{RInsol0,dRInsol0},{RUpsol0,dRUpsol0}];
 	sampledFunc[nsamp_]:=sampledFunc[nsamp]=SourceTermEccEq0PA[wrlist[nsamp],l,m,n,orbit,{\[Lambda],SWSH},{RInsol0,dRInsol0},{RUpsol0,dRUpsol0}];
 	
     sumFun[0]=1/nInt[0]*{Total[sampledFunc[0][[1]],Method->"CompensatedSummation"],Total[sampledFunc[0][[2]],Method->"CompensatedSummation"]};
