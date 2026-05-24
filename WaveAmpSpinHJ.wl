@@ -83,7 +83,7 @@ dfabid\[Theta][\[Zeta]_,\[Zeta]bar_,sin\[Theta]_,\[CapitalDelta]_,d\[CapitalDelt
 
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Computation phase in the source term*)
 
 
@@ -335,7 +335,7 @@ angeigenfunction1corrint[s_,l_,m_,\[Gamma]0_,\[Gamma]1_]:=Module[{qratio,swshcoe
 ]
 
 
-(* ::Section::Closed:: *)
+(* ::Section:: *)
 (*Source term for a spinning particle - eccentric, equatorial orbits*)
 
 
@@ -367,7 +367,7 @@ Module[{wr0=\[Pi],sign,a,p,e,x,En,Lz,Kc,\[CapitalOmega]r,\[CapitalOmega]\[Phi],r
     Ur = sign*Sqrt[((rp^2+a^2)*En-a*Lz)^2-(rp^2-2rp+a^2)*(rp^2+Kc)];
    (* phase = \[Omega]*orbit["\[CapitalDelta]trg"][wr+wr0]-m*orbit["\[CapitalDelta]\[Phi]rg"][wr+wr0];*)
     \[Psi]ref=\[CapitalDelta]\[Psi]funref[{\[Omega],m},{En,Lz},a,p,e,x];
-    phase=\[CapitalDelta]\[Psi]ICr2gfun[wr,{\[Omega],m},{En,Lz},\[Psi]ref,a,p,e,x];
+    phase=\[CapitalDelta]\[Psi]ICr1gfun[wr+wr0,{\[Omega],m},{En,Lz},\[Psi]ref,a,p,e,x];
     
     expr = Exp[sign*I*(phase+n*wr)];(* Geodesic exponential term with \[CapitalDelta]tr and \[CapitalDelta]\[Phi]r *)
     \[CapitalDelta] = rp^2-2rp+a^2;
@@ -453,7 +453,7 @@ Module[{wr0=\[Pi],sign,a,p,e,x,En,Lz,Kc,En1,Lz1,\[CapitalOmega]r,\[CapitalOmega]
     Ur = sign*Sqrt[((rp^2+a^2)*En-a*Lz)^2-(rp^2-2rp+a^2)*(rp^2+Kc)];
     (* phase = \[Omega]*orbit["\[CapitalDelta]trg"][wr+wr0]-m*orbit["\[CapitalDelta]\[Phi]rg"][wr+wr0];*)
     \[Psi]ref=\[CapitalDelta]\[Psi]funref[{\[Omega],m},{En,Lz},a,p,e,x];
-    phase=\[CapitalDelta]\[Psi]ICr2gfun[wr,{\[Omega],m},{En,Lz},\[Psi]ref,a,p,e,x];
+    phase=\[CapitalDelta]\[Psi]ICr1gfun[wr+wr0,{\[Omega],m},{En,Lz},\[Psi]ref,a,p,e,x];
     expr = Exp[sign*I*(phase+n*wr)];(* Geodesic exponential term with \[CapitalDelta]tr and \[CapitalDelta]\[Phi]r *)
     \[CapitalDelta] = rp^2-2rp+a^2;
     KTeu = (rp^2+a^2)*\[Omega]-a*m;
@@ -564,7 +564,7 @@ Module[{wr0=\[Pi],sign,a,p,e,x,En,Lz,Kc,En1,Lz1,\[CapitalOmega]r,\[CapitalOmega]
 ]
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*Generic spin-gauge (FF, FT, FTE)*)
 
 
@@ -603,7 +603,7 @@ Module[{sign,a,p,e,x,En,Lz,Kc,En1,Lz1,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[C
     Ur = sign*Sqrt[((rp^2+a^2)*En-a*Lz)^2-(rp^2-2rp+a^2)*(rp^2+Kc)];
     (* phase = \[Omega]*orbit["\[CapitalDelta]trg"][wr+wr0]-m*orbit["\[CapitalDelta]\[Phi]rg"][wr+wr0];*)
     \[Psi]ref=\[CapitalDelta]\[Psi]funref[{\[Omega],m},{En,Lz},a,p,e,x];
-    phase=\[CapitalDelta]\[Psi]ICr2gfun[wr,{\[Omega],m},{En,Lz},\[Psi]ref,a,p,e,x];
+    phase=\[CapitalDelta]\[Psi]ICr1gfun[wr+\[Pi],{\[Omega],m},{En,Lz},\[Psi]ref,a,p,e,x];
     expr = Exp[sign*I*(phase+n*wr)];(* Geodesic exponential term with \[CapitalDelta]tr and \[CapitalDelta]\[Phi]r *)
     \[CapitalDelta] = rp^2-2rp+a^2;
     KTeu = (rp^2+a^2)*\[Omega]-a*m;
