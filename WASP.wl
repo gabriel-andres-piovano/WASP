@@ -4,7 +4,7 @@
 (*Begin package*)
 
 
-BeginPackage["WaveAmpSpinHJ`",
+BeginPackage["WASP`",
   {
   "HSCSolverHomogeneousRadialTeukolsky`",
   "SpinWeightedSpheroidalHarmonics`",
@@ -17,26 +17,26 @@ BeginPackage["WaveAmpSpinHJ`",
 (*Functions for eccentric equatorial orbits*)
 
 
-WaveAmpSpinHJEccEq0PA::usage = "WaveAmpSpinHJEccEq0PA[l,m,n,orbit,tol] calculates the waveform amplitudes and fluxes for a non-spinnning test-particle on eccentric, equatorial orbits.";
+WASPEccEq0PA::usage = "WASPEccEq0PA[l,m,n,orbit,tol] calculates the waveform amplitudes and fluxes for a non-spinnning test-particle on eccentric, equatorial orbits.";
 
 
-WaveAmpSpinHJEccEqFF::usage = "WaveAmpSpinHJEccEqFF[l,m,n,orbit,tol] calculates the waveform amplitudes and fluxes for a spinning test-particle on eccentric, equatorial orbits. The calculations are performed in the fixed frequency spin-gauge.";
+WASPEccEqFF::usage = "WASPEccEqFF[l,m,n,orbit,tol] calculates the waveform amplitudes and fluxes for a spinning test-particle on eccentric, equatorial orbits. The calculations are performed in the fixed frequency spin-gauge.";
 
 
-WaveAmpSpinHJEccEqGenericGauge::usage = "WaveAmpSpinHJEccEqGenericGauge[l,m,n,orbit,wr0,tol] calculates the waveform amplitudes and fluxes for a spinning test-particle on eccentric, equatorial orbits. Valid for any spin-gauge.";
+WASPEccEqGenericGauge::usage = "WASPEccEqGenericGauge[l,m,n,orbit,wr0,tol] calculates the waveform amplitudes and fluxes for a spinning test-particle on eccentric, equatorial orbits. Valid for any spin-gauge.";
 
 
 (* ::Subsubsection:: *)
 (*Functions for circular orbits*)
 
 
-WaveAmpSpinHJCEOFF::usage = "WaveAmpSpinHJCEOFF[l,m,a,rp] calculates the waveform amplitudes and fluxes for a spinning test-particle on circular, equatorial orbits. The calculations are performed in the fixed frequency spin-gauge.";
+WASPCircEqFF::usage = "WASPCircEqFF[l,m,a,rp] calculates the waveform amplitudes and fluxes for a spinning test-particle on circular, equatorial orbits. The calculations are performed in the fixed frequency spin-gauge.";
 
 
-WaveAmpSpinHJCEOFE::usage = "WaveAmpSpinHJCEOFE[l,m,a,rp] calculates the waveform amplitudes and fluxes for a spinning test-particle on circular, equatorial orbits. The calculations are performed in the fixed eccentricity spin-gauge.";
+WASPCircEqFE::usage = "WASPCircEqFE[l,m,a,rp] calculates the waveform amplitudes and fluxes for a spinning test-particle on circular, equatorial orbits. The calculations are performed in the fixed eccentricity spin-gauge.";
 
 
-WaveAmpSpinHJCEOFT::usage = "WaveAmpSpinHJCEOFF[l,m,a,rp] calculates the waveform amplitudes and fluxes for a spinning test-particle on circular, equatorial orbits. The calculations are performed in the fixed radius spin-gauge.";
+WASPCircEqFT::usage = "WASPCircEqFT[l,m,a,rp] calculates the waveform amplitudes and fluxes for a spinning test-particle on circular, equatorial orbits. The calculations are performed in the fixed radius spin-gauge.";
 
 
 (* ::Subsubsection:: *)
@@ -335,7 +335,7 @@ angeigenfunction1corrint[s_,l_,m_,\[Gamma]0_,\[Gamma]1_]:=Module[{qratio,swshcoe
 ]
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Source term for a spinning particle - eccentric, equatorial orbits*)
 
 
@@ -564,7 +564,7 @@ Module[{wr0=\[Pi],sign,a,p,e,x,En,Lz,Kc,En1,Lz1,\[CapitalOmega]r,\[CapitalOmega]
 ]
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Generic spin-gauge (FF, FT, FTE)*)
 
 
@@ -741,7 +741,7 @@ Module[{sign,a,p,e,x,En,Lz,Kc,En1,Lz1,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[C
 (*The sign of the amplitudes now follow the same convention of the BHPToolkit (the sign convention was changed after the first version of this code).*)
 
 
-WaveAmpSpinHJEccEq0PA[l_,m_,n_,orbit_,tol_]:=
+WASPEccEq0PA[l_,m_,n_,orbit_,tol_]:=
 Module[{a,p,e,x,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[CapitalGamma],\[Omega],\[Lambda],SWSH,RInsol0,dRInsol0,RUpsol0,dRUpsol0,\[ScriptCapitalC]2,rplus,\[Kappa],\[Epsilon],\[Alpha],nInt,wrlist,sampledFunc,sumFun,i,CPlus0,CMin0,relerr},
 	{a,p,e,x}=orbit["OrbitalElements"];
     (* Geodesic BL frequencies *)
@@ -811,7 +811,7 @@ Module[{a,p,e,x,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[CapitalGamma],\[Omega],
 (*The sign of the amplitudes now follow the same convention of the BHPToolkit (the sign convention was changed after the first version of this code).*)
 
 
-WaveAmpSpinHJEccEqFF[l_,m_,n_,orbit_,tol_]:=
+WASPEccEqFF[l_,m_,n_,orbit_,tol_]:=
 Module[{a,p,e,x,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[CapitalGamma],\[Omega],\[Lambda],SWSH,RInsol0,dRInsol0,RUpsol0,dRUpsol0,\[ScriptCapitalC]2,rplus,\[Kappa],\[Epsilon],\[Alpha],nInt,wrlist,sampledFunc,sumFun,i,CPlus0,CMin0,CPlus1,CMin1,relerr},
 	{a,p,e,x}=orbit["OrbitalElements"];
     (* Geodesic BL frequencies *)
@@ -900,7 +900,7 @@ Module[{a,p,e,x,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[CapitalGamma],\[Omega],
 (*The sign of the amplitudes now follow the same convention of the BHPToolkit (the sign convention was changed after the first version of this code).*)
 
 
-WaveAmpSpinHJEccEqGenericGauge[l_,m_,n_,orbit_,wr0_,tol_]:=
+WASPEccEqGenericGauge[l_,m_,n_,orbit_,wr0_,tol_]:=
 Module[{a,p,e,x,\[CapitalOmega]r0,\[CapitalOmega]\[Phi]0,\[CapitalOmega]r1,\[CapitalOmega]\[Phi]1,\[Omega],\[Omega]1,\[Lambda],\[Lambda]1,SWSH,SWSHS,RInsol0,dRInsol0,RInsol1,dRInsol1,RUpsol0,dRUpsol0,RUpsol1,dRUpsol1,\[ScriptCapitalC]2,\[ScriptCapitalC]21,rplus,\[Kappa],\[Epsilon],\[Alpha],\[Alpha]1,nInt,wrlist,sampledFunc,sumFun,i,CPlus0,CMin0,CPlus1,CMin1,relerr},
 	{a,p,e,x}=orbit["OrbitalElements"];
 	(* Geodesic BL frequencies *)
@@ -994,7 +994,7 @@ Module[{a,p,e,x,\[CapitalOmega]r0,\[CapitalOmega]\[Phi]0,\[CapitalOmega]r1,\[Cap
 (*Fixed frequency*)
 
 
-WaveAmpSpinHJCEOFF[l_,m_,a_,rp_]:=
+WASPCircEqFF[l_,m_,a_,rp_]:=
 Module[{h1,h2,En,Lz,Kc,En1,En1tot,Enrp1,Lz1,Lzrp1,Lz1tot,\[CapitalOmega]\[Phi],\[CapitalGamma],\[Omega],
     SWSH,\[Lambda],\[ScriptCapitalC]2,rplus,\[Kappa],\[Epsilon],\[Alpha],W,sumPlus0,sumMin0,sumPlus1,sumMin1,\[CapitalDelta],d\[CapitalDelta],KTeu,dKTeu,dKTeu1,V,dV,RInsol0,dRInsol0,ddRInsol0,dddRInsol0,
     RUpsol0,dRUpsol0,ddRUpsol0,dddRUpsol0,S,L2S,L1L2S,dSd\[Theta],d2Sd\[Theta]2,d3Sd\[Theta]3,dL2Sd\[Theta],dL1L2Sd\[Theta],\[Zeta],\[Zeta]bar,\[CapitalSigma],
@@ -1170,7 +1170,7 @@ Module[{h1,h2,En,Lz,Kc,En1,En1tot,Enrp1,Lz1,Lzrp1,Lz1tot,\[CapitalOmega]\[Phi],\
 (*Fixed eccentricity*)
 
 
-WaveAmpSpinHJCEOFE[l_,m_,a_,rp_]:=
+WASPCircEqFE[l_,m_,a_,rp_]:=
 Module[{s=-2,h1,h2,En,Lz,Kc,En1,Enrp1,En1tot,Lz1,Lzrp1,Lz1tot,\[CapitalOmega]\[Phi],\[CapitalOmega]\[Phi]1,\[CapitalOmega]\[Phi]1rp1,\[CapitalOmega]\[Phi]1tot,\[CapitalGamma],\[Omega],\[Omega]1,
     SWSH,SWSHS,\[Lambda],\[Lambda]1,\[ScriptCapitalC]2,\[ScriptCapitalC]21,rplus,\[Kappa],\[Epsilon],\[Alpha],\[Alpha]1,W,W1,sumPlus0,sumMin0,sumPlus1,sumMin1,\[CapitalDelta],d\[CapitalDelta],KTeu,KTeu1,dKTeu,dKTeu1,V,V1,dV,RInsol0,dRInsol0,ddRInsol0,dddRInsol0,
     RUpsol0,dRUpsol0,ddRUpsol0,RInsol1,dRInsol1,RUpsol1,dRUpsol1,dddRUpsol0,RIn0,RUp0,dRIn0,dRUp0,ddRIn0,dddRIn0,ddRUp0,dddRUp0,RIn1,RUp1,dRIn1,dRUp1,ddRIn1,ddRUp1,
@@ -1377,7 +1377,7 @@ Module[{s=-2,h1,h2,En,Lz,Kc,En1,Enrp1,En1tot,Lz1,Lzrp1,Lz1tot,\[CapitalOmega]\[P
 (*Fixed turning points*)
 
 
-WaveAmpSpinHJCEOFT[l_,m_,a_,rp_]:=
+WASPCircEqFT[l_,m_,a_,rp_]:=
 Module[{s=-2,En,Lz,Kc,En1,Lz1,\[CapitalOmega]\[Phi],\[CapitalOmega]\[Phi]1,\[CapitalGamma],\[CapitalGamma]1,\[Omega],\[Omega]1,\[Lambda],\[Lambda]1,SWSH,SWSHS,RInsol0,dRInsol0,RUpsol0,dRUpsol0,RInsol1,dRInsol1,RUpsol1,dRUpsol1,
     \[ScriptCapitalC]2,\[ScriptCapitalC]21,rplus,\[Kappa],\[Epsilon],\[Alpha],\[Alpha]1,W,W1,sumPlus0,sumMin0,sumPlus1,sumMin1,
     \[CapitalDelta],d\[CapitalDelta],KTeu,KTeu1,dKTeu,dKTeu1,V,V1,dV,RIn0,dRIn0,ddRIn0,RIn1,dRIn1,ddRIn1,dddRIn0,
