@@ -729,11 +729,11 @@ Module[{sign,a,p,e,x,En,Lz,Kc,En1,Lz1,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[C
 ]
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Fluxes for a spinning particle - eccentric orbits*)
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Geodesic*)
 
 
@@ -742,7 +742,7 @@ Module[{sign,a,p,e,x,En,Lz,Kc,En1,Lz1,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[C
 
 
 WASPEccEq0PA[l_,m_,n_,orbit_,tol_]:=
-Module[{a,p,e,x,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[CapitalGamma],\[Omega],\[Lambda],SWSH,RInsol0,dRInsol0,RUpsol0,dRUpsol0,\[ScriptCapitalC]2,rplus,\[Kappa],\[Epsilon],\[Alpha],wrlist,sampledFunc,sumFun,i,iconv,iextrap,CPlus0,CMin0,relerr0,relerrprev,lnr,lnC,nsample},
+Module[{a,p,e,x,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[CapitalGamma],\[Omega],\[Lambda],SWSH,RInsol0,dRInsol0,RUpsol0,dRUpsol0,\[ScriptCapitalC]2,rplus,\[Kappa],\[Epsilon],\[Alpha],nInt,wrlist,sampledFunc,sumFun,i,CPlus0,CMin0,relerr},
 	{a,p,e,x}=orbit["OrbitalElements"];
     (* Geodesic BL frequencies *)
     \[CapitalOmega]r = orbit["BLFrequenciesGeo"][[1]];
@@ -759,49 +759,29 @@ Module[{a,p,e,x,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[CapitalGamma],\[Omega],
     \[Epsilon] = Sqrt[1^2-a^2]/(4*rplus);
     \[Alpha] = 256*(2*rplus)^5*\[Kappa]*(\[Kappa]^2+4*\[Epsilon]^2)*(\[Kappa]^2+16*\[Epsilon]^2)*\[Omega]^3/\[ScriptCapitalC]2; (* constant for horizon fluxes *)
 	
-	wrlist[nsamp_]:=N[Table[wr,{wr,Pi/nsamp,Pi,2Pi/nsamp}]];
-	sampledFunc[2^1]=SourceTermEccEq0PA[wrlist[2^1],l,m,n,orbit,{\[Lambda],SWSH},{RInsol0,dRInsol0},{RUpsol0,dRUpsol0}];
+	nInt[nsamp_]:=2^nsamp*2^2;
+	wrlist[nsamp_]:=N[Table[wr,{wr,Pi/(nInt[nsamp]),Pi,2Pi/nInt[nsamp]}]];
+	
+	sampledFunc[0]=SourceTermEccEq0PA[wrlist[0],l,m,n,orbit,{\[Lambda],SWSH},{RInsol0,dRInsol0},{RUpsol0,dRUpsol0}];
 	sampledFunc[nsamp_]:=sampledFunc[nsamp]=SourceTermEccEq0PA[wrlist[nsamp],l,m,n,orbit,{\[Lambda],SWSH},{RInsol0,dRInsol0},{RUpsol0,dRUpsol0}];
 	
-    sumFun[2^1]=1/(2^1)*{Total[sampledFunc[2^1][[1]],Method->"CompensatedSummation"],Total[sampledFunc[2^1][[2]],Method->"CompensatedSummation"]};
-	sumFun[2^2]=1/(2^2)*{Total[sampledFunc[2^2][[1]],Method->"CompensatedSummation"],Total[sampledFunc[2^2][[2]],Method->"CompensatedSummation"]};
-	sumFun[nsamp_]:=sumFun[nsamp]=1/nsamp*{Total[sampledFunc[nsamp][[1]],Method->"CompensatedSummation"],Total[sampledFunc[nsamp][[2]],Method->"CompensatedSummation"]};
+    sumFun[0]=1/nInt[0]*{Total[sampledFunc[0][[1]],Method->"CompensatedSummation"],Total[sampledFunc[0][[2]],Method->"CompensatedSummation"]};
+	sumFun[1]=1/nInt[1]*{Total[sampledFunc[1][[1]],Method->"CompensatedSummation"],Total[sampledFunc[1][[2]],Method->"CompensatedSummation"]};
+	sumFun[nsamp_]:=sumFun[nsamp]=1/nInt[nsamp]*{Total[sampledFunc[nsamp][[1]],Method->"CompensatedSummation"],Total[sampledFunc[nsamp][[2]],Method->"CompensatedSummation"]};
 	
-	(*i=3;*)
-	i=2;
-	iconv=0;
-	(*relerr0=Abs[1-sumFun[2^2][[1]]/sumFun[2^1][[1]]];
-	relerrprev=relerr0;*)
-	relerr0=1;
-	relerrprev=relerr0;
+	relerr[0]=Abs[1-sumFun[1][[1]]/sumFun[0][[1]]];
+	relerr[nsamp_]:=relerr[nsamp]=Abs[1-sumFun[nsamp][[1]]/sumFun[nsamp-1][[1]]];
 	
-	While[relerr0>10^(-tol)&&i<=10&&iconv<2,
-		relerr0=Abs[1-sumFun[2^i][[1]]/sumFun[2^(i-1)][[1]]];
-		
-		lnr=(Log[relerr0]-Log[relerrprev])/(2^i-2^(i-1));
-		lnC=Log[relerrprev]-2^(i-1)*lnr;
-		iextrap=Ceiling[Log2[(Log[10^(-tol)]-lnC)/lnr]];
-		nsample=2^iextrap;
-		
-		If[relerr0<=relerrprev,
-			iconv=iconv+1;
-			,
-			iconv=0;
-		];
-		relerrprev=relerr0;	
-	i++];
+	i=1;
+	While[relerr[i]>10^(-tol)&&i<=10,i++];
 	
-	CPlus0=sumFun[nsample][[1]];
-	CMin0=sumFun[nsample][[2]];
-	If[iextrap==(i-1),
-		relerr0=Abs[1-sumFun[2^(i-2)][[1]]/CPlus0];
-		,
-		relerr0=Abs[1-sumFun[2^(i-1)][[1]]/CPlus0];
-	];
+	CPlus0=sumFun[i][[1]];
+	CMin0=sumFun[i][[2]];
+	
 	Remove[RInsol0,dRInsol0,RUpsol0,dRUpsol0,\[Lambda],SWSH,sampledFunc,wrlist,sumFun];
 
   Association[
-    "gg"->{2^(i-1),nsample,relerr0,lnr,lnC},
+    "gg"->{nInt[i],relerr[i]},
     "Amplitudes"->
     <|
       "I"->CPlus0,
@@ -823,7 +803,7 @@ Module[{a,p,e,x,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[CapitalGamma],\[Omega],
 ]
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Fixed frequency*)
 
 
@@ -832,7 +812,7 @@ Module[{a,p,e,x,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[CapitalGamma],\[Omega],
 
 
 WASPEccEqFF[l_,m_,n_,orbit_,tol_]:=
-Module[{a,p,e,x,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[CapitalGamma],\[Omega],\[Lambda],SWSH,RInsol0,dRInsol0,RUpsol0,dRUpsol0,\[ScriptCapitalC]2,rplus,\[Kappa],\[Epsilon],\[Alpha],wrlist,sampledFunc,sumFun,i,iconv,iextrap,CPlus0,CMin0,CPlus1,CMin1,relerr0,relerrprev,lnr,lnC,nsample},
+Module[{a,p,e,x,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[CapitalGamma],\[Omega],\[Lambda],SWSH,RInsol0,dRInsol0,RUpsol0,dRUpsol0,\[ScriptCapitalC]2,rplus,\[Kappa],\[Epsilon],\[Alpha],nInt,wrlist,sampledFunc,sumFun,i,CPlus0,CMin0,CPlus1,CMin1,relerr},
 	{a,p,e,x}=orbit["OrbitalElements"];
     (* Geodesic BL frequencies *)
     \[CapitalOmega]r = orbit["BLFrequenciesGeo"][[1]];
@@ -849,51 +829,31 @@ Module[{a,p,e,x,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[CapitalGamma],\[Omega],
     \[Epsilon] = Sqrt[1^2-a^2]/(4*rplus);
     \[Alpha] = 256*(2*rplus)^5*\[Kappa]*(\[Kappa]^2+4*\[Epsilon]^2)*(\[Kappa]^2+16*\[Epsilon]^2)*\[Omega]^3/\[ScriptCapitalC]2; (* constant for horizon fluxes *)
 	
-	wrlist[nsamp_]:=N[Table[wr,{wr,Pi/nsamp,Pi,2Pi/nsamp}]];
-	sampledFunc[2^1]=SourceTermEccEqFF[wrlist[2^1],l,m,n,orbit,{\[Lambda],SWSH},{RInsol0,dRInsol0},{RUpsol0,dRUpsol0}];
+	nInt[nsamp_]:=2^nsamp*2^2;
+	wrlist[nsamp_]:=N[Table[wr,{wr,Pi/(nInt[nsamp]),Pi,2Pi/nInt[nsamp]}]];
+	
+	sampledFunc[0]=SourceTermEccEqFF[wrlist[0],l,m,n,orbit,{\[Lambda],SWSH},{RInsol0,dRInsol0},{RUpsol0,dRUpsol0}];
 	sampledFunc[nsamp_]:=sampledFunc[nsamp]=SourceTermEccEqFF[wrlist[nsamp],l,m,n,orbit,{\[Lambda],SWSH},{RInsol0,dRInsol0},{RUpsol0,dRUpsol0}];
 	
-    sumFun[2^1]=1/(2^1)*{Total[sampledFunc[2^1][[1]],Method->"CompensatedSummation"],Total[sampledFunc[2^1][[2]],Method->"CompensatedSummation"],Total[sampledFunc[2^1][[3]],Method->"CompensatedSummation"],Total[sampledFunc[2^1][[4]],Method->"CompensatedSummation"]};
-	sumFun[2^2]=1/(2^2)*{Total[sampledFunc[2^2][[1]],Method->"CompensatedSummation"],Total[sampledFunc[2^2][[2]],Method->"CompensatedSummation"],Total[sampledFunc[2^2][[3]],Method->"CompensatedSummation"],Total[sampledFunc[2^2][[4]],Method->"CompensatedSummation"]};
-	sumFun[nsamp_]:=sumFun[nsamp]=1/nsamp*{Total[sampledFunc[nsamp][[1]],Method->"CompensatedSummation"],Total[sampledFunc[nsamp][[2]],Method->"CompensatedSummation"],Total[sampledFunc[nsamp][[3]],Method->"CompensatedSummation"],Total[sampledFunc[nsamp][[4]],Method->"CompensatedSummation"]};
+    sumFun[0]=1/nInt[0]*{Total[sampledFunc[0][[1]],Method->"CompensatedSummation"],Total[sampledFunc[0][[2]],Method->"CompensatedSummation"],Total[sampledFunc[0][[3]],Method->"CompensatedSummation"],Total[sampledFunc[0][[4]],Method->"CompensatedSummation"]};
+	sumFun[1]=1/nInt[1]*{Total[sampledFunc[1][[1]],Method->"CompensatedSummation"],Total[sampledFunc[1][[2]],Method->"CompensatedSummation"],Total[sampledFunc[1][[3]],Method->"CompensatedSummation"],Total[sampledFunc[1][[4]],Method->"CompensatedSummation"]};
+	sumFun[nsamp_]:=sumFun[nsamp]=1/nInt[nsamp]*{Total[sampledFunc[nsamp][[1]],Method->"CompensatedSummation"],Total[sampledFunc[nsamp][[2]],Method->"CompensatedSummation"],Total[sampledFunc[nsamp][[3]],Method->"CompensatedSummation"],Total[sampledFunc[nsamp][[4]],Method->"CompensatedSummation"]};
 	
-	(*i=3;*)
-	i=2;
-	iconv=0;
-	(*relerr0=Abs[1-sumFun[2^2][[1]]/sumFun[2^1][[1]]];
-	relerrprev=relerr0;*)
-	relerr0=1;
-	relerrprev=relerr0;
+	relerr[0]=Abs[1-sumFun[1][[1]]/sumFun[0][[1]]];
+	relerr[nsamp_]:=relerr[nsamp]=Abs[1-sumFun[nsamp][[1]]/sumFun[nsamp-1][[1]]];
 	
-	While[relerr0>10^(-tol)&&i<=10&&iconv<2,
-		relerr0=Abs[1-sumFun[2^i][[1]]/sumFun[2^(i-1)][[1]]];
-		
-		lnr=(Log[relerr0]-Log[relerrprev])/(2^i-2^(i-1));
-		lnC=Log[relerrprev]-2^(i-1)*lnr;
-		iextrap=Ceiling[Log2[(Log[10^(-tol)]-lnC)/lnr]];
-		nsample=2^iextrap;
-		
-		If[relerr0<=relerrprev,
-			iconv=iconv+1;
-			,
-			iconv=0;
-		];
-		relerrprev=relerr0;	
-	i++];
+	i=1;
+	While[relerr[i]>10^(-tol)&&i<=10,i++];
 	
-	CPlus0=sumFun[nsample][[1]];
-	CMin0=sumFun[nsample][[2]];
-	CPlus1=sumFun[nsample][[3]];
-	CMin1=sumFun[nsample][[4]];
-	If[iextrap==(i-1),
-		relerr0=Abs[1-sumFun[2^(i-2)][[1]]/CPlus0];
-		,
-		relerr0=Abs[1-sumFun[2^(i-1)][[1]]/CPlus0];
-	];
+	CPlus0=sumFun[i][[1]];
+	CMin0=sumFun[i][[2]];
+	CPlus1=sumFun[i][[3]];
+	CMin1=sumFun[i][[4]];
+	
 	Remove[RInsol0,dRInsol0,RUpsol0,dRUpsol0,\[Lambda],SWSH,sampledFunc,wrlist,sumFun];
 
   Association[
-    "gg"->{2^(i-1),nsample,relerr0,lnr,lnC},
+    "gg"->{nInt[i],relerr[i]},
     "Amplitudes"->
     <|
       "I"->CPlus0,
@@ -932,7 +892,7 @@ Module[{a,p,e,x,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[CapitalGamma],\[Omega],
 ]
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Generic spin-gauge (FT, FE)*)
 
 
@@ -941,8 +901,7 @@ Module[{a,p,e,x,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[CapitalGamma],\[Omega],
 
 
 WASPEccEqGenericGauge[l_,m_,n_,orbit_,wr0_,tol_]:=
-Module[{a,p,e,x,\[CapitalOmega]r0,\[CapitalOmega]\[Phi]0,\[CapitalOmega]r1,\[CapitalOmega]\[Phi]1,\[Omega],\[Omega]1,\[Lambda],\[Lambda]1,SWSH,SWSHS,RInsol0,dRInsol0,RInsol1,dRInsol1,RUpsol0,dRUpsol0,RUpsol1,dRUpsol1,
-		\[ScriptCapitalC]2,\[ScriptCapitalC]21,rplus,\[Kappa],\[Epsilon],\[Alpha],\[Alpha]1,wrlist,sampledFunc,sumFun,i,iconv,iextrap,CPlus0,CMin0,CPlus1,CMin1,relerr0,relerrprev,lnr,lnC,nsample},
+Module[{a,p,e,x,\[CapitalOmega]r0,\[CapitalOmega]\[Phi]0,\[CapitalOmega]r1,\[CapitalOmega]\[Phi]1,\[Omega],\[Omega]1,\[Lambda],\[Lambda]1,SWSH,SWSHS,RInsol0,dRInsol0,RInsol1,dRInsol1,RUpsol0,dRUpsol0,RUpsol1,dRUpsol1,\[ScriptCapitalC]2,\[ScriptCapitalC]21,rplus,\[Kappa],\[Epsilon],\[Alpha],\[Alpha]1,nInt,wrlist,sampledFunc,sumFun,i,CPlus0,CMin0,CPlus1,CMin1,relerr},
 	{a,p,e,x}=orbit["OrbitalElements"];
 	(* Geodesic BL frequencies *)
     \[CapitalOmega]r0 = orbit["BLFrequenciesGeo"][[1]];
@@ -964,51 +923,31 @@ Module[{a,p,e,x,\[CapitalOmega]r0,\[CapitalOmega]\[Phi]0,\[CapitalOmega]r1,\[Cap
     \[Alpha] = 256*(2*rplus)^5*\[Kappa]*(\[Kappa]^2+4*\[Epsilon]^2)*(\[Kappa]^2+16*\[Epsilon]^2)*\[Omega]^3/\[ScriptCapitalC]2; (* constant for horizon fluxes *)
     \[Alpha]1 = -256*(2*rplus)^5*\[Kappa]*(\[Kappa]^2+4*\[Epsilon]^2)*(\[Kappa]^2+16*\[Epsilon]^2)*\[Omega]^3/\[ScriptCapitalC]2^2*\[ScriptCapitalC]21+256*(2*rplus)^5*(\[Omega]1*(\[Kappa]^2+4*\[Epsilon]^2)*(\[Kappa]^2+16*\[Epsilon]^2)*\[Omega]^3+\[Kappa]*(2*\[Kappa]*\[Omega]1)*(\[Kappa]^2+16*\[Epsilon]^2)*\[Omega]^3+\[Kappa]*(\[Kappa]^2+4*\[Epsilon]^2)*(2*\[Kappa]*\[Omega]1)*\[Omega]^3+\[Kappa]*(\[Kappa]^2+4*\[Epsilon]^2)*(\[Kappa]^2+16*\[Epsilon]^2)*3*\[Omega]^2*\[Omega]1)/\[ScriptCapitalC]2; (* linear part of the constant for horizon fluxes *)
 
-	wrlist[nsamp_]:=N[Table[wr,{wr,Pi/nsamp,Pi,2Pi/nsamp}]];
-	sampledFunc[2^1]=SourceTermEccEqGenericGauge[wrlist[2^1],l,m,n,orbit,wr0,{\[Lambda],\[Lambda]1,SWSH,SWSHS},{{RInsol0,dRInsol0},{RInsol1,dRInsol1}},{{RUpsol0,dRUpsol0},{RUpsol1,dRUpsol1}}];
+	nInt[nsamp_]:=2^nsamp*2^2;
+	wrlist[nsamp_]:=N[Table[wr,{wr,Pi/(nInt[nsamp]),Pi,2Pi/nInt[nsamp]}]];
+	
+	sampledFunc[0]=SourceTermEccEqGenericGauge[wrlist[0],l,m,n,orbit,wr0,{\[Lambda],\[Lambda]1,SWSH,SWSHS},{{RInsol0,dRInsol0},{RInsol1,dRInsol1}},{{RUpsol0,dRUpsol0},{RUpsol1,dRUpsol1}}];
 	sampledFunc[nsamp_]:=sampledFunc[nsamp]=SourceTermEccEqGenericGauge[wrlist[nsamp],l,m,n,orbit,wr0,{\[Lambda],\[Lambda]1,SWSH,SWSHS},{{RInsol0,dRInsol0},{RInsol1,dRInsol1}},{{RUpsol0,dRUpsol0},{RUpsol1,dRUpsol1}}];
 	
-    sumFun[2^1]=1/(2^1)*{Total[sampledFunc[2^1][[1]],Method->"CompensatedSummation"],Total[sampledFunc[2^1][[2]],Method->"CompensatedSummation"],Total[sampledFunc[2^1][[3]],Method->"CompensatedSummation"],Total[sampledFunc[2^1][[4]],Method->"CompensatedSummation"]};
-	sumFun[2^2]=1/(2^2)*{Total[sampledFunc[2^2][[1]],Method->"CompensatedSummation"],Total[sampledFunc[2^2][[2]],Method->"CompensatedSummation"],Total[sampledFunc[2^2][[3]],Method->"CompensatedSummation"],Total[sampledFunc[2^2][[4]],Method->"CompensatedSummation"]};
-	sumFun[nsamp_]:=sumFun[nsamp]=1/nsamp*{Total[sampledFunc[nsamp][[1]],Method->"CompensatedSummation"],Total[sampledFunc[nsamp][[2]],Method->"CompensatedSummation"],Total[sampledFunc[nsamp][[3]],Method->"CompensatedSummation"],Total[sampledFunc[nsamp][[4]],Method->"CompensatedSummation"]};
+    sumFun[0]=1/nInt[0]*{Total[sampledFunc[0][[1]],Method->"CompensatedSummation"],Total[sampledFunc[0][[2]],Method->"CompensatedSummation"],Total[sampledFunc[0][[3]],Method->"CompensatedSummation"],Total[sampledFunc[0][[4]],Method->"CompensatedSummation"]};
+	sumFun[1]=1/nInt[1]*{Total[sampledFunc[1][[1]],Method->"CompensatedSummation"],Total[sampledFunc[1][[2]],Method->"CompensatedSummation"],Total[sampledFunc[1][[3]],Method->"CompensatedSummation"],Total[sampledFunc[1][[4]],Method->"CompensatedSummation"]};
+	sumFun[nsamp_]:=sumFun[nsamp]=1/nInt[nsamp]*{Total[sampledFunc[nsamp][[1]],Method->"CompensatedSummation"],Total[sampledFunc[nsamp][[2]],Method->"CompensatedSummation"],Total[sampledFunc[nsamp][[3]],Method->"CompensatedSummation"],Total[sampledFunc[nsamp][[4]],Method->"CompensatedSummation"]};
 	
-	(*i=3;*)
-	i=2;
-	iconv=0;
-	(*relerr0=Abs[1-sumFun[2^2][[1]]/sumFun[2^1][[1]]];
-	relerrprev=relerr0;*)
-	relerr0=1;
-	relerrprev=relerr0;
+	relerr[0]=Abs[1-sumFun[1][[1]]/sumFun[0][[1]]];
+	relerr[nsamp_]:=relerr[nsamp]=Abs[1-sumFun[nsamp][[1]]/sumFun[nsamp-1][[1]]];
 	
-	While[relerr0>10^(-tol)&&i<=10&&iconv<2,
-		relerr0=Abs[1-sumFun[2^i][[1]]/sumFun[2^(i-1)][[1]]];
-		
-		lnr=(Log[relerr0]-Log[relerrprev])/(2^i-2^(i-1));
-		lnC=Log[relerrprev]-2^(i-1)*lnr;
-		iextrap=Ceiling[Log2[(Log[10^(-tol)]-lnC)/lnr]];
-		nsample=2^iextrap;
-		
-		If[relerr0<=relerrprev,
-			iconv=iconv+1;
-			,
-			iconv=0;
-		];
-		relerrprev=relerr0;	
-	i++];
+	i=1;
+	While[relerr[i]>10^(-tol)&&i<=10,i++];
 	
-	CPlus0=sumFun[nsample][[1]];
-	CMin0=sumFun[nsample][[2]];
-	CPlus1=sumFun[nsample][[3]];
-	CMin1=sumFun[nsample][[4]];
-	If[iextrap==(i-1),
-		relerr0=Abs[1-sumFun[2^(i-2)][[1]]/CPlus0];
-		,
-		relerr0=Abs[1-sumFun[2^(i-1)][[1]]/CPlus0];
-	];
-	Remove[RInsol0,dRInsol0,RUpsol0,dRUpsol0,\[Lambda],SWSH,sampledFunc,wrlist,sumFun];
+	CPlus0=sumFun[i][[1]];
+	CMin0=sumFun[i][[2]];
+	CPlus1=sumFun[i][[3]];
+	CMin1=sumFun[i][[4]];
+	
+	Remove[RInsol0,dRInsol0,RUpsol0,dRUpsol0,RInsol1,dRInsol1,RUpsol1,dRUpsol1,\[Lambda],\[Lambda]1,SWSH,SWSHS,sampledFunc,wrlist,sumFun];
 	
   Association[
-    "gg"->{2^(i-1),nsample,relerr0,lnr,lnC},
+    "gg"->{nInt[i],relerr[i]},
     "Amplitudes"->
     <|
       "I"->CPlus0,
