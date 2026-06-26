@@ -751,7 +751,7 @@ Module[{a,p,e,x,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[CapitalGamma],\[Omega],
 
 	{\[Lambda],SWSH} = angpar0[-2,l,m,a,\[Omega]]; (* Polar and radial functions and the eigenvalue for geodesic frequency and linear corrections *)
 	{RInsol0,dRInsol0} = TsolverIn[-2,l,m,a,\[Omega],\[Lambda],p/(1-e),All][[1;;2]];
-    {RUpsol0,dRUpsol0} = TsolverUp[-2,l,m,a,\[Omega],\[Lambda],p/(1+e),All][[1;;2]];
+    {RUpsol0,dRUpsol0} = TsolverUpFromTSidentity[-2,l,m,a,\[Omega],\[Lambda],p/(1+e),All];
     
     \[ScriptCapitalC]2 = ((\[Lambda]+2)^2+4a*\[Omega](m-a*\[Omega]))*(\[Lambda]^2+36a*\[Omega](m-a*\[Omega]))-(2\[Lambda]+3)*(48a*\[Omega](m-2a*\[Omega]))+144*\[Omega]^2*(1-a^2); (* TS constant *)
     rplus = 1+Sqrt[1-a^2]; (* horizon r_+  *)
@@ -821,7 +821,7 @@ Module[{a,p,e,x,\[CapitalOmega]r,\[CapitalOmega]\[Phi],\[CapitalGamma],\[Omega],
 
 	{\[Lambda],SWSH} = angpar0[-2,l,m,a,\[Omega]]; (* Polar and radial functions and the eigenvalue for geodesic frequency and linear corrections *)
 	{RInsol0,dRInsol0} = TsolverIn[-2,l,m,a,\[Omega],\[Lambda],p/(1-e),All][[1;;2]];
-    {RUpsol0,dRUpsol0} = TsolverUp[-2,l,m,a,\[Omega],\[Lambda],p/(1+e),All][[1;;2]];
+    {RUpsol0,dRUpsol0} = TsolverUpFromTSidentity[-2,l,m,a,\[Omega],\[Lambda],p/(1+e),All][[1;;2]];
     
     \[ScriptCapitalC]2 = ((\[Lambda]+2)^2+4a*\[Omega](m-a*\[Omega]))*(\[Lambda]^2+36a*\[Omega](m-a*\[Omega]))-(2\[Lambda]+3)*(48a*\[Omega](m-2a*\[Omega]))+144*\[Omega]^2*(1-a^2); (* TS constant *)
     rplus = 1+Sqrt[1-a^2]; (* horizon r_+  *)
@@ -913,7 +913,7 @@ Module[{a,p,e,x,\[CapitalOmega]r0,\[CapitalOmega]\[Phi]0,\[CapitalOmega]r1,\[Cap
 	
 	{\[Lambda],\[Lambda]1,SWSH,SWSHS} = angpar[-2,l,m,a,\[Omega],\[Omega]1]; (* Polar and radial functions and the eigenvalue for geodesic frequency and linear corrections *)
     {RInsol0,dRInsol0,RInsol1,dRInsol1} = TsolverIn1spin[-2,l,m,a,\[Omega],\[Omega]1,\[Lambda],\[Lambda]1,p/(1-e),All][[1;;4]];
-    {RUpsol0,dRUpsol0,RUpsol1,dRUpsol1} = TsolverUp1spin[-2,l,m,a,\[Omega],\[Omega]1,\[Lambda],\[Lambda]1,p/(1+e),All][[1;;4]];
+    {RUpsol0,dRUpsol0,RUpsol1,dRUpsol1} = TsolverUpFromTSidentity1spin[-2,l,m,a,\[Omega],\[Omega]1,\[Lambda],\[Lambda]1,p/(1+e),All][[1;;4]];
     
     \[ScriptCapitalC]2 = ((\[Lambda]+2)^2+4a*\[Omega](m-a*\[Omega]))*(\[Lambda]^2+36a*\[Omega](m-a*\[Omega]))-(2\[Lambda]+3)*(48a*\[Omega](m-2a*\[Omega]))+144*\[Omega]^2*(1-a^2); (* TS constant *)
     \[ScriptCapitalC]21 = 4\[Lambda]^3*\[Lambda]1+4\[Lambda]^2(3\[Lambda]1+10a(m-2a*\[Omega])\[Omega]1)+8\[Lambda](\[Lambda]1(1+10a*m*\[Omega]-10a^2*\[Omega]^2)+6a(m+2a*\[Omega])\[Omega]1)+48\[Omega](a*m*\[Lambda]1+6\[Omega]1-18a^3*m*\[Omega]*\[Omega]1+12a^4*\[Omega]^2*\[Omega]1+a^2(\[Lambda]1*\[Omega]+6m^2*\[Omega]1));  (* linear part of the TS constant *)
@@ -1032,7 +1032,7 @@ Module[{h1,h2,En,Lz,Kc,En1,En1tot,Enrp1,Lz1,Lzrp1,Lz1tot,\[CapitalOmega]\[Phi],\
    (* Polar and radial functions and the eigenvalue for geodesic frequency and linear corrections *)
    {\[Lambda],SWSH} = angpar0[-2,l,m,a,\[Omega]]; 
    {RInsol0,dRInsol0} = Through[TsolverIn[-2,l,m,a,\[Omega],\[Lambda],rp,Automatic][[1;;2]][rp]];
-   {RUpsol0,dRUpsol0} = Through[TsolverUp[-2,l,m,a,\[Omega],\[Lambda],rp,Automatic][[1;;2]][rp]];
+   {RUpsol0,dRUpsol0} = Through[TsolverUpFromTSidentity[-2,l,m,a,\[Omega],\[Lambda],rp,Automatic][[1;;2]][rp]];
    \[ScriptCapitalC]2 = ((\[Lambda]+2)^2+4a*\[Omega](m-a*\[Omega]))*(\[Lambda]^2+36a*\[Omega](m-a*\[Omega]))-(2\[Lambda]+3)*(48a*\[Omega](m-2a*\[Omega]))+144*\[Omega]^2*(1-a^2); (*  TS constant *)
    rplus = 1+Sqrt[1-a^2]; 
    \[Kappa] = \[Omega]-m*a/(2*rplus); (* frequency at the horizon *)
@@ -1214,7 +1214,7 @@ Module[{s=-2,h1,h2,En,Lz,Kc,En1,Enrp1,En1tot,Lz1,Lzrp1,Lz1tot,\[CapitalOmega]\[P
     (* Polar and radial functions and the eigenvalue for geodesic frequency and linear corrections *)
     {\[Lambda],\[Lambda]1,SWSH,SWSHS} = angpar[-2,l,m,a,\[Omega],\[Omega]1]; 
     {RInsol0,dRInsol0,RInsol1,dRInsol1} = TsolverIn1spin[-2,l,m,a,\[Omega],\[Omega]1,\[Lambda],\[Lambda]1,rp,Automatic][[1;;4]];
-    {RUpsol0,dRUpsol0,RUpsol1,dRUpsol1} = TsolverUp1spin[-2,l,m,a,\[Omega],\[Omega]1,\[Lambda],\[Lambda]1,rp,Automatic][[1;;4]];
+    {RUpsol0,dRUpsol0,RUpsol1,dRUpsol1} = TsolverUpFromTSidentity1spin[-2,l,m,a,\[Omega],\[Omega]1,\[Lambda],\[Lambda]1,rp,Automatic][[1;;4]];
     
     \[ScriptCapitalC]2 = ((\[Lambda]+2)^2+4a*\[Omega](m-a*\[Omega]))*(\[Lambda]^2+36a*\[Omega](m-a*\[Omega]))-(2\[Lambda]+3)*(48a*\[Omega](m-2a*\[Omega]))+144*\[Omega]^2*(1-a^2);
     \[ScriptCapitalC]21 = 4\[Lambda]^3*\[Lambda]1+4\[Lambda]^2(3\[Lambda]1+10a(m-2a*\[Omega])\[Omega]1)+8\[Lambda](\[Lambda]1(1+10a*m*\[Omega]-10a^2 \[Omega]^2)+6a(m+2a*\[Omega])\[Omega]1)+48\[Omega](a*m*\[Lambda]1+6\[Omega]1-18a^3*m*\[Omega]*\[Omega]1+12a^4*\[Omega]^2*\[Omega]1+a^2(\[Lambda]1*\[Omega]+6m^2*\[Omega]1));
@@ -1405,7 +1405,7 @@ Module[{s=-2,En,Lz,Kc,En1,Lz1,\[CapitalOmega]\[Phi],\[CapitalOmega]\[Phi]1,\[Cap
     (* Polar and radial functions and the eigenvalue for geodesic frequency and linear corrections *)
     {\[Lambda],\[Lambda]1,SWSH,SWSHS} = angpar[-2,l,m,a,\[Omega],\[Omega]1]; 
     {RInsol0,dRInsol0,RInsol1,dRInsol1} = TsolverIn1spin[-2,l,m,a,\[Omega],\[Omega]1,\[Lambda],\[Lambda]1,rp,Automatic][[1;;4]];
-    {RUpsol0,dRUpsol0,RUpsol1,dRUpsol1} = TsolverUp1spin[-2,l,m,a,\[Omega],\[Omega]1,\[Lambda],\[Lambda]1,rp,Automatic][[1;;4]];
+    {RUpsol0,dRUpsol0,RUpsol1,dRUpsol1} = TsolverUpFromTSidentity1spin[-2,l,m,a,\[Omega],\[Omega]1,\[Lambda],\[Lambda]1,rp,Automatic][[1;;4]];
     
     \[ScriptCapitalC]2 = ((\[Lambda]+2)^2+4a*\[Omega](m-a*\[Omega]))*(\[Lambda]^2+36a*\[Omega](m-a*\[Omega]))-(2\[Lambda]+3)*(48a*\[Omega](m-2a*\[Omega]))+144*\[Omega]^2*(1-a^2);
     \[ScriptCapitalC]21 = 4\[Lambda]^3*\[Lambda]1+4\[Lambda]^2(3\[Lambda]1+10a(m-2a*\[Omega])\[Omega]1)+8\[Lambda](\[Lambda]1 (1+10a*m*\[Omega]-10a^2 \[Omega]^2)+6a(m+2a*\[Omega])\[Omega]1)+48\[Omega](a*m*\[Lambda]1+6\[Omega]1-18a^3*m*\[Omega]*\[Omega]1+12a^4*\[Omega]^2*\[Omega]1+a^2(\[Lambda]1*\[Omega]+6m^2*\[Omega]1));
